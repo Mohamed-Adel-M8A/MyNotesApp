@@ -1,10 +1,10 @@
 import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 // ====== APP INITIALIZATION ======
-export function initApp() {
+export async function initApp() {
     const root = document.getElementById('app-root');
     if (!root) return;
 
@@ -20,41 +20,43 @@ export function initApp() {
                 <option value="tag">الوسم</option>
             </select>
             <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
-            <button id="exportTxtBtn">📃 تصدير TXT</button>
-            <button id="exportPdfBtn">📄 تصدير PDF</button>
+            <button id="importBtn">📥 استيراد</button>
+            <button id="exportTxtBtn">📃 TXT</button>
+            <button id="exportPdfBtn">📄 PDF</button>
+            <input type="file" id="fileInput" style="display:none" accept=".json">
         </div>
     </header>
 
-    <main id="board"></main>
+    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;">
+        </div>
 
-    <div id="ad-wrapper" style="margin: 20px auto; text-align: center; min-height: 100px;">
-        <div id="container-8f54a65907f2fd9954b6e8ae38ebaa69"></div>
-    </div>
+    <main id="board"></main>
 
     <div id="contextMenu" class="context-menu" style="display:none; position: absolute; z-index: 1000;"></div>
     `;
 
     initGlobalListeners();
     initAutoSave();
-    injectAdScript();
+    injectNewAd();
 
-    setTimeout(async () => {
-        try {
-            const savedCards = await Storage.loadCardsData();
-            if (savedCards && Array.isArray(savedCards)) {
-                savedCards.forEach(cardData => UI.addCard(cardData));
-            }
-        } catch (e) {
-            console.warn("Load Error.");
+    // تحميل البيانات بانتظار حقيقي لـ IndexedDB
+    try {
+        const savedCards = await Storage.loadCardsData();
+        if (savedCards && Array.isArray(savedCards)) {
+            savedCards.forEach(cardData => UI.addCard(cardData));
         }
-    }, 100);
+    } catch (e) {
+        console.warn("Load Error.");
+    }
 }
 
 // ====== LISTENERS ======
 function initGlobalListeners() {
+    // إضافة بطاقة
     const addBtn = document.getElementById("addCardBtn");
     if (addBtn) addBtn.onclick = () => UI.addCard({});
 
+    // البحث
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
@@ -65,6 +67,33 @@ function initGlobalListeners() {
         };
     }
 
+    // الاستيراد (Import)
+    const importBtn = document.getElementById("importBtn");
+    const fileInput = document.getElementById("fileInput");
+    if (importBtn && fileInput) {
+        importBtn.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    const db = await Storage.openDB();
+                    const tx = db.transaction("notes", "readwrite");
+                    const store = tx.objectStore("notes");
+                    await store.clear();
+                    data.forEach(item => store.add(item));
+                    location.reload();
+                } catch (err) {
+                    alert("الملف غير صالح!");
+                }
+            };
+            reader.readAsText(file);
+        };
+    }
+
+    // القائمة الجانبية (Context Menu)
     const menu = document.getElementById("contextMenu");
     if (menu) {
         document.addEventListener("click", () => menu.style.display = "none");
@@ -77,6 +106,7 @@ function initGlobalListeners() {
         };
     }
 
+    // التصدير
     const exTxt = document.getElementById("exportTxtBtn");
     if (exTxt) exTxt.onclick = () => Exporter.exportToTxt();
 
@@ -95,7 +125,8 @@ function initAutoSave() {
 // ====== ADS INJECTION ======
 function injectNewAd() {
     const adContainer = document.getElementById('ad-container');
-    
+    if (!adContainer) return;
+
     window.atOptions = {
         'key' : '5c11d6bd3b90979d196f54bd06080171',
         'format' : 'iframe',
@@ -109,4 +140,3 @@ function injectNewAd() {
     adScript.src = 'https://www.highperformanceformat.com/5c11d6bd3b90979d196f54bd06080171/invoke.js';
     adContainer.appendChild(adScript);
 }
-
