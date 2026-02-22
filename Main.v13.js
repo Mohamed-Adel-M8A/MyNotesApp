@@ -1,7 +1,7 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/Ui.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/storage.js';
-import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/Editor.js';
-import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/exporter.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
+import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
+import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 /**
  * تشغيل التطبيق وحقن الواجهة
@@ -113,3 +113,4 @@ function injectAdScript() {
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
 }
+
