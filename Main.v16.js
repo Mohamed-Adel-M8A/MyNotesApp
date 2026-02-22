@@ -140,3 +140,4 @@ function injectNewAd() {
     adScript.src = 'https://www.highperformanceformat.com/5c11d6bd3b90979d196f54bd06080171/invoke.js';
     adContainer.appendChild(adScript);
 }
+
