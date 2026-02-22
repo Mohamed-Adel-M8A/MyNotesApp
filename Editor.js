@@ -1,8 +1,5 @@
-import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/storage.js';
+import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MYNotesApp/storage.js';
 
-/**
- * دالة لتطبيق التنسيقات على النص المظلل
- */
 export function applyStyle(tag, props = {}, attributes = {}) {
     const selection = window.getSelection();
     if (!selection.rangeCount || selection.isCollapsed) return;
@@ -137,3 +134,4 @@ export function renderContextMenu(e, menu, display) {
     menu.style.left = `${x}px`;
 
 }
+
