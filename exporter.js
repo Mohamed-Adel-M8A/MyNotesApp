@@ -1,8 +1,3 @@
-/**
- * MyNotesApp - Exporter Module
- * يدعم التصدير إلى: TXT, PDF, HTML, Markdown
- */
-
 // ====== 1. دالة المساعدة الأساسية للتحميل ======
 function downloadFile(filename, text, type = 'text/plain') {
   const blob = new Blob([text], { type: `${type};charset=utf-8` });
@@ -191,3 +186,4 @@ export function exportToPDF() {
       printWindow.close();
   };
 }
+
