@@ -2,7 +2,7 @@ const DB_NAME = "NotesAppDB";
 const DB_VERSION = 1;
 const STORE_NAME = "notes";
 
-function openDB() {
+export function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onupgradeneeded = (event) => {
@@ -12,7 +12,7 @@ function openDB() {
             }
         };
         request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject("IndexedDB Open Error");
+        request.onerror = () => reject("IndexedDB Error");
     });
 }
 
@@ -37,9 +37,6 @@ export async function saveAllCards() {
         for (const item of data) {
             store.add(item);
         }
-        return new Promise((resolve) => {
-            tx.oncomplete = () => resolve();
-        });
     } catch (e) {
         console.error("Save Error:", e);
     }
@@ -57,7 +54,6 @@ export async function loadCardsData() {
             request.onerror = () => resolve([]);
         });
     } catch (e) {
-        console.error("Load Error:", e);
         return [];
     }
 }
@@ -68,14 +64,13 @@ export async function clearStorage() {
         try {
             const db = await openDB();
             const tx = db.transaction(STORE_NAME, "readwrite");
-            const store = tx.objectStore(STORE_NAME);
-            store.clear();
+            await tx.objectStore(STORE_NAME).clear();
             tx.oncomplete = () => {
-                localStorage.removeItem("cards_data");
+                localStorage.clear();
                 location.reload();
             };
         } catch (e) {
-            console.error("Wipe Error:", e);
+            console.error(e);
         }
     }
 }
