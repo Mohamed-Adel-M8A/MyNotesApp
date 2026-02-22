@@ -1,7 +1,7 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/Ui.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/storage.js';
-import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp@/Editor.js';
-import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/NotesApp/exporter.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Ui.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
+import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
+import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 // ====== GLOBAL EVENT LISTENERS ======
 export function initGlobalListeners() {
@@ -65,3 +65,4 @@ export function initAutoSave() {
     });
 
 }
+
