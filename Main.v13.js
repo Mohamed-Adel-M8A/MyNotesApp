@@ -1,16 +1,13 @@
 import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Storage.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
-/**
- * تشغيل التطبيق وحقن الواجهة
- */
+// ====== APP INITIALIZATION ======
 export function initApp() {
     const root = document.getElementById('app-root');
     if (!root) return;
 
-    // 1. حقن الهيكل الأساسي + حاوية الإعلان
     root.innerHTML = `
     <header>
         <div class="brand">
@@ -30,36 +27,30 @@ export function initApp() {
 
     <main id="board"></main>
 
-    <div id="ad-wrapper" style="margin: 20px auto; text-align: center; min-height: 100px; padding: 10px;">
+    <div id="ad-wrapper" style="margin: 20px auto; text-align: center; min-height: 100px;">
         <div id="container-8f54a65907f2fd9954b6e8ae38ebaa69"></div>
     </div>
 
     <div id="contextMenu" class="context-menu" style="display:none; position: absolute; z-index: 1000;"></div>
     `;
 
-    // 2. تفعيل المستمعات (Listeners)
     initGlobalListeners();
     initAutoSave();
-
-    // 3. حقن سكريبت الإعلان برمجياً
     injectAdScript();
 
-    // 4. تحميل البطاقات المخزنة (مع تأخير بسيط لضمان استقرار البورد)
-    setTimeout(() => {
+    setTimeout(async () => {
         try {
-            const savedCards = Storage.loadCardsData();
+            const savedCards = await Storage.loadCardsData();
             if (savedCards && Array.isArray(savedCards)) {
                 savedCards.forEach(cardData => UI.addCard(cardData));
             }
         } catch (e) {
-            console.warn("فشل تحميل البيانات أو لا توجد ملاحظات قديمة.");
+            console.warn("Load Error.");
         }
     }, 100);
 }
 
-/**
- * ربط الأزرار والعمليات
- */
+// ====== LISTENERS ======
 function initGlobalListeners() {
     const addBtn = document.getElementById("addCardBtn");
     if (addBtn) addBtn.onclick = () => UI.addCard({});
@@ -93,9 +84,7 @@ function initGlobalListeners() {
     if (exPdf) exPdf.onclick = () => Exporter.exportToPDF();
 }
 
-/**
- * الحفظ التلقائي عند أي تغيير في البورد
- */
+// ====== AUTO SAVE ======
 function initAutoSave() {
     const board = document.getElementById("board");
     if (!board) return;
@@ -103,9 +92,7 @@ function initAutoSave() {
     observer.observe(board, { childList: true, subtree: true, characterData: true });
 }
 
-/**
- * حقن سكريبت الإعلان ديناميكياً
- */
+// ====== ADS INJECTION ======
 function injectAdScript() {
     const adScript = document.createElement('script');
     adScript.type = 'text/javascript';
@@ -113,4 +100,3 @@ function injectAdScript() {
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
 }
-
