@@ -1,5 +1,5 @@
 import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Storage.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
@@ -109,3 +109,4 @@ function injectNewAd() {
     adScript.src = 'https://www.highperformanceformat.com/5c11d6bd3b90979d196f54bd06080171/invoke.js';
     adContainer.appendChild(adScript);
 }
+
