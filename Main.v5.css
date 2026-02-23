@@ -116,7 +116,6 @@ header {
     box-shadow: var(--shadow);
     resize: both;
     overflow: hidden;
-    height: auto;
     min-height: 320px;
     min-width: 350px;
     max-width: 100%;
@@ -153,20 +152,20 @@ header {
 }
 
 .display {
-  flex-grow: 1;
-  min-height: 120px;
-  background: #fcfcfc;
-  border: 1px solid #f1f5f9;
-  padding: 15px;
+    flex: 1;
+    min-height: 120px;
+    background: #fcfcfc;
+    border: 1px solid #f1f5f9;
+    padding: 15px;
     margin-bottom: 10px;
-  border-radius: 10px;
-  outline: none;
-  font-size: 1rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  line-height: 1.7;
-  overflow-y: auto;
+    border-radius: 10px;
+    outline: none;
+    font-size: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.7;
+    overflow-y: auto;
 }
 
 .display:focus {
@@ -411,6 +410,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
