@@ -152,16 +152,6 @@ function initAutoSave() {
     });
 }
 
-function injectAdScript() {
-    const adScript = document.createElement('script');
-    adScript.type = 'text/javascript';
-    adScript.async = true;
-    adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
-    document.head.appendChild(adScript);
-}
-
-
-
 /* ====== 4. Tool ====== */
 let selectionTimeout;
 document.addEventListener('selectionchange', () => {
@@ -187,4 +177,11 @@ document.addEventListener('selectionchange', () => {
     }, 200);
 });
 
-
+/* ====== 4. AD ====== */
+function injectAdScript() {
+    const adScript = document.createElement('script');
+    adScript.type = 'text/javascript';
+    adScript.async = true;
+    adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
+    document.head.appendChild(adScript);
+}
