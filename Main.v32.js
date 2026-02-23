@@ -133,7 +133,6 @@ function initGlobalListeners() {
         }
     };
 
-    // أزرار التصدير الكلي
     document.getElementById("exportTxtBtn").onclick = () => Exporter.exportToTxt();
     document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
 }
@@ -161,5 +160,27 @@ function injectAdScript() {
     document.head.appendChild(adScript);
 }
 
+
+
+/* ====== 4. Tool ====== */
+document.addEventListener('selectionchange', () => {
+    const selection = window.getSelection();
+    const text = selection.toString().trim();
+    const menu = document.getElementById("context-menu");
+
+    if (text.length > 0 && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
+        const fakeEvent = {
+            pageX: rect.left + window.scrollX,
+            pageY: rect.top + window.scrollY - 10
+        };
+
+        renderContextMenu(fakeEvent, menu);
+    } else {
+        if (menu) menu.style.display = "none";
+    }
+});
 
 
