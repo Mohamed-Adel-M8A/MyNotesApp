@@ -14,7 +14,8 @@ export async function initApp() {
             <h1>منظم أفكاري</h1>
         </div>
         <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <div class="main-tools" style="display: flex; gap: 10px; align-items: center;">
+            
+            <div class="main-tools" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الوسم...">
                 <select id="searchType">
                     <option value="name">العنوان</option>
@@ -25,29 +26,33 @@ export async function initApp() {
                 <button id="exportTxtBtn">📃 TXT</button>
                 <button id="exportPdfBtn">📄 PDF</button>
             </div>
-            
+
             <div class="promo-tools">
                 <button id="dealsBtn" style="
                     background: #000; 
                     color: #fff; 
                     border: none; 
-                    padding: 8px 15px; 
-                    border-radius: 5px; 
+                    padding: 8px 18px; 
+                    border-radius: 6px; 
                     cursor: pointer; 
                     font-weight: bold;
                     display: flex;
                     align-items: center;
-                    gap: 5px;
-                    transition: transform 0.2s;
+                    gap: 8px;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                 ">
                     🛒 أدوات الإنتاجية ↗
                 </button>
             </div>
-            <input type="file" id="fileInput" style="display:none" accept=".json">
+            
+            <input type="file" id="fileInput" style="display:none" accept=".json,.txt,.html">
         </div>
     </header>
 
-    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;"></div>
+    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;">
+        <div id="container-8f54a65907f2fd9954b6e8ae38ebaa69"></div>
+    </div>
 
     <main id="board"></main>
 
@@ -58,6 +63,7 @@ export async function initApp() {
     initAutoSave();
     injectAdScript();
 
+    // تحميل البيانات من IndexedDB
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
@@ -70,22 +76,30 @@ export async function initApp() {
 
 // ====== LISTENERS ======
 function initGlobalListeners() {
-    document.getElementById("addCardBtn").onclick = () => UI.addCard({});
+    // إضافة بطاقة جديدة
+    const addBtn = document.getElementById("addCardBtn");
+    if (addBtn) addBtn.onclick = () => UI.addCard({});
 
-    // زر العروض (جهة المعاكسة)
+    // زر العروض (المكان المعاكس)
     const dealsBtn = document.getElementById("dealsBtn");
     if (dealsBtn) {
         dealsBtn.onclick = () => window.open('deals.html', '_blank');
-        dealsBtn.onmouseover = () => dealsBtn.style.transform = "scale(1.05)";
-        dealsBtn.onmouseout = () => dealsBtn.style.transform = "scale(1)";
+        dealsBtn.onmouseover = () => dealsBtn.style.transform = "translateY(-2px)";
+        dealsBtn.onmouseout = () => dealsBtn.style.transform = "translateY(0)";
     }
 
+    // البحث والفلترة
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
-        sIn.oninput = (e) => UI.filterCards(e.target.value.toLowerCase().trim(), sTy.value);
+        sIn.oninput = (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            const type = sTy.value;
+            if (UI.filterCards) UI.filterCards(term, type);
+        };
     }
 
+    // نظام الاستيراد الذكي (JSON, TXT, HTML)
     const importBtn = document.getElementById("importBtn");
     const fileInput = document.getElementById("fileInput");
     if (importBtn && fileInput) {
@@ -93,22 +107,44 @@ function initGlobalListeners() {
         fileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
+            const extension = file.name.split('.').pop().toLowerCase();
+
             reader.onload = async (event) => {
+                const content = event.target.result;
                 try {
-                    const data = JSON.parse(event.target.result);
-                    const db = await Storage.openDB();
-                    const tx = db.transaction("notes", "readwrite");
-                    const store = tx.objectStore("notes");
-                    await store.clear();
-                    data.forEach(item => store.add(item));
-                    location.reload();
-                } catch (err) { alert("الملف غير صالح! يجب أن يكون ملف Backup بصيغة JSON."); }
+                    if (extension === 'json') {
+                        const data = JSON.parse(content);
+                        const db = await Storage.openDB();
+                        const tx = db.transaction("notes", "readwrite");
+                        const store = tx.objectStore("notes");
+                        await store.clear();
+                        data.forEach(item => store.add(item));
+                        location.reload();
+                    } 
+                    else if (extension === 'txt' || extension === 'html') {
+                        const newCardData = {
+                            id: "card_" + Date.now(),
+                            title: file.name.replace(`.${extension}`, ""),
+                            html: extension === 'html' ? content : content.replace(/\n/g, '<br>'),
+                            tags: "مستورد",
+                            color: "#ffffff",
+                            targetTime: 0,
+                            dir: "rtl"
+                        };
+                        UI.addCard(newCardData);
+                        await Storage.saveAllCards();
+                    }
+                } catch (err) {
+                    alert("خطأ في قراءة الملف!");
+                }
             };
             reader.readAsText(file);
         };
     }
 
+    // القائمة الجانبية (ContextMenu)
     const menu = document.getElementById("contextMenu");
     if (menu) {
         document.addEventListener("click", () => menu.style.display = "none");
@@ -121,8 +157,12 @@ function initGlobalListeners() {
         };
     }
 
-    document.getElementById("exportTxtBtn").onclick = () => Exporter.exportToTxt();
-    document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
+    // أزرار التصدير
+    const exTxt = document.getElementById("exportTxtBtn");
+    if (exTxt) exTxt.onclick = () => Exporter.exportToTxt();
+
+    const exPdf = document.getElementById("exportPdfBtn");
+    if (exPdf) exPdf.onclick = () => Exporter.exportToPDF();
 }
 
 // ====== AUTO SAVE ======
@@ -133,7 +173,7 @@ function initAutoSave() {
     observer.observe(board, { childList: true, subtree: true, characterData: true });
 }
 
-// ====== ADS INJECTION ======
+// ====== ADS INJECTION (OLD SYSTEM) ======
 function injectAdScript() {
     const adScript = document.createElement('script');
     adScript.type = 'text/javascript';
