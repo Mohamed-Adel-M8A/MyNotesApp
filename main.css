@@ -101,11 +101,13 @@ header {
   position: relative;
   box-shadow: var(--shadow);
   transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  resize: both;
-  overflow: visible;
-  max-width: 100%;
+  resize: both; 
+  overflow: hidden; 
+  flex: 0 0 auto;
+  margin: 5px;
   min-height: 280px;
   min-width: 300px;
+  max-width: 100%;
 }
 
 .card:hover {
@@ -214,10 +216,9 @@ header {
   padding: 20px;
   margin-top: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: absolute; 
+  position: static; 
   width: 100%;
   z-index: 50;
-  bottom: 50px; left: 10px; right: 10px; width: auto;
 }
 
 .dropdown-grid {
@@ -396,3 +397,4 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
