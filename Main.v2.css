@@ -79,15 +79,19 @@ header {
 
 #toggleDirBtn { background: #475569; }
 
+.promo-tools {
+    margin-right: auto;
+    display: flex;
+}
+
 .deals-btn-style {
-    background: #000000 !important;
-    color: white !important;
-    border: none;
+    background: #000 !important;
+    color: #fff !important;
     padding: 10px 20px;
     border-radius: 8px;
-    cursor: pointer;
+    border: none;
     font-weight: bold;
-    margin-right: auto;
+    cursor: pointer;
 }
 
 /* ====== 3. BOARD & LAYOUT ====== */
@@ -111,13 +115,12 @@ header {
   gap: 15px;
   position: relative;
   box-shadow: var(--shadow);
-  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: auto; 
+  min-height: 300px;
   resize: both; 
   overflow: hidden; 
-  height: fit-content;
   flex: 0 0 auto;
   margin: 10px;
-  min-height: 300px;
   min-width: 320px;
   max-width: 100%;
 }
@@ -153,11 +156,12 @@ header {
 }
 
 .display {
-  flex-grow: 1;
+  flex-grow: 0;
   min-height: 120px;
   background: #fcfcfc;
   border: 1px solid #f1f5f9;
   padding: 15px;
+    margin-bottom: 10px;
   border-radius: 10px;
   outline: none;
   font-size: 1rem;
@@ -221,12 +225,12 @@ header {
 .dropdown-menu {
   display: none;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   background: white;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
-  margin-top: 12px;
+  margin-top: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   position: relative; 
   width: 100%;
@@ -410,6 +414,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
