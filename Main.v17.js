@@ -123,21 +123,10 @@ function initAutoSave() {
 }
 
 // ====== ADS INJECTION ======
-function injectNewAd() {
-    const adContainer = document.getElementById('ad-container');
-    if (!adContainer) return;
-
-    window.atOptions = {
-        'key' : '5c11d6bd3b90979d196f54bd06080171',
-        'format' : 'iframe',
-        'height' : 60,
-        'width' : 468,
-        'params' : {}
-    };
-
+function injectAdScript() {
     const adScript = document.createElement('script');
     adScript.type = 'text/javascript';
-    adScript.src = 'https://www.highperformanceformat.com/5c11d6bd3b90979d196f54bd06080171/invoke.js';
-    adContainer.appendChild(adScript);
+    adScript.async = true;
+    adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
+    document.head.appendChild(adScript);
 }
-
