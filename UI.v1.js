@@ -1,6 +1,6 @@
 /* ====== Ui.js - النسخة المصلحة بالكامل ====== */
 
-import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
+import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
 import { startCardTimer } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/timer.js';
 import { 
     exportSingleCardAsTxt, 
@@ -11,7 +11,6 @@ import {
 
 /* ====== 1. MAIN CARD INTERFACE ====== */
 export function addCard(data = {}) {
-    // نقوم بجلب البورد داخل الدالة لضمان وجوده في الـ DOM بعد الحقن
     const board = document.getElementById("board");
     
     if (!board) {
@@ -39,6 +38,8 @@ export function addCard(data = {}) {
         <div class="edit-tools">
             <button class="edit-toggle" title="تعديل">✏️</button>
             <button class="dir-toggle" title="تغيير الاتجاه">↔️</button>
+            <span class="btn-minimize">➖</span>
+            <span class="btn-maximize">🔳</span>
         </div>
         <div class="title" contenteditable="true">${title}</div>
         <div class="timer-box"></div>
@@ -203,4 +204,5 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
 
