@@ -8,6 +8,7 @@ import {
 } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 export function addCard(data = {}) {
+    
     const board = document.getElementById("board");
     if (!board) return;
 
@@ -20,6 +21,7 @@ export function addCard(data = {}) {
     const targetTime = parseInt(data.targetTime || 0);
     const dir = data.dir || 'rtl';
     const width = data.width || '350px';
+    const height = data.height || '320px';
 
     const card = document.createElement("div");
     card.className = "card";
@@ -30,6 +32,7 @@ export function addCard(data = {}) {
     // تطبيق الأبعاد والستايل
     card.style.backgroundColor = color;
     card.style.width = width;
+    card.style.height = height;
     card.dir = dir;
 
     card.innerHTML = `
@@ -73,17 +76,18 @@ export function addCard(data = {}) {
 
     // فتح وإغلاق القائمة
 card.querySelector('.dropdown-btn').onclick = (e) => {
-        e.stopPropagation();
-        const isHidden = menu.style.display === "none";
-        document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
-        
-        if (isHidden) {
-            menu.style.display = "flex";
-            card.style.height = "auto"; 
-        } else {
-            menu.style.display = "none";
-        }
-    };
+    e.stopPropagation();
+    const isHidden = menu.style.display === "none";
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
+
+    if (isHidden) {
+        menu.style.display = "flex";
+        card.style.height = "auto";
+    } else {
+        menu.style.display = "none";
+        saveAllCards(); 
+    }
+};
 
     // وضع التعديل
     card.querySelector('.edit-toggle').onclick = (e) => {
@@ -171,7 +175,8 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
     if (targetTime > Date.now()) {
         startCardTimer(card, targetTime, card.querySelector('.timer-box'));
     }
-
+    const resizeObserver = new MutationObserver(() => saveAllCards());
+    resizeObserver.observe(card, { attributes: true, attributeFilter: ['style'] });
     board.prepend(card);
 }
 
@@ -205,5 +210,6 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
 
 
