@@ -1,4 +1,4 @@
-import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
+import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v2.js';
 
 export function applyStyle(tag, props = {}, attributes = {}) {
     const selection = window.getSelection();
@@ -134,6 +134,7 @@ export function renderContextMenu(e, menu, display) {
     menu.style.left = `${x}px`;
 
 }
+
 
 
 
