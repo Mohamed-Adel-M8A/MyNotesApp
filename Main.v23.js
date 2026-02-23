@@ -1,9 +1,9 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v1.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
-// ====== APP INITIALIZATION ======
+/* ====== 1. APP INITIALIZATION ====== */
 export async function initApp() {
     const root = document.getElementById('app-root');
     if (!root) return;
@@ -13,9 +13,8 @@ export async function initApp() {
         <div class="brand">
             <h1>منظم أفكاري</h1>
         </div>
-        <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-            
-            <div class="main-tools" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <div class="toolbar">
+            <div class="main-tools">
                 <input type="text" id="searchInput" placeholder="ابحث...">
                 <select id="searchType">
                     <option value="name">العنوان</option>
@@ -24,7 +23,7 @@ export async function initApp() {
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
                 
-                <div class="zoom-controls" style="display: flex; align-items: center; gap: 5px; background: #eee; padding: 5px; border-radius: 5px;">
+                <div class="zoom-controls">
                     <span>🔍</span>
                     <button id="zoomOut">➖</button>
                     <button id="zoomIn">➕</button>
@@ -35,7 +34,7 @@ export async function initApp() {
             </div>
 
             <div class="promo-tools">
-                <button id="dealsBtn" style="background: #000; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                <button id="dealsBtn" class="deals-btn-style">
                     🛒 أدوات الإنتاجية ↗
                 </button>
             </div>
@@ -46,18 +45,17 @@ export async function initApp() {
 
     <main id="board"></main>
 
-    <div id="footer-ads" style="text-align:center; margin: 30px auto; padding: 20px; border-top: 1px dashed #ccc;">
+    <div id="footer-ads">
         <div id="container-8f54a65907f2fd9954b6e8ae38ebaa69"></div>
     </div>
 
-    <div id="contextMenu" class="context-menu" style="display:none; position: absolute; z-index: 1000;"></div>
+    <div id="contextMenu" class="context-menu" style="display:none;"></div>
     `;
 
     initGlobalListeners();
     initAutoSave();
     injectAdScript();
 
-    // تحميل البيانات
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
@@ -68,42 +66,39 @@ export async function initApp() {
     }
 }
 
-// ====== LISTENERS ======
+/* ====== 2. LISTENERS ====== */
 function initGlobalListeners() {
     const board = document.getElementById("board");
 
-    // إضافة بطاقة
     document.getElementById("addCardBtn").onclick = () => UI.addCard({});
 
-    // ميزة الزووم (التكبير والتصغير للبطاقات)
+    // تحسين نظام الزووم (Zoom)
     let currentZoom = 1;
-    document.getElementById("zoomIn").onclick = () => {
+    const zoomIn = document.getElementById("zoomIn");
+    const zoomOut = document.getElementById("zoomOut");
+
+    zoomIn.onclick = () => {
         if (currentZoom < 1.5) {
             currentZoom += 0.1;
-            board.style.transform = `scale(${currentZoom})`;
-            board.style.transformOrigin = "top center";
+            board.style.zoom = currentZoom;
         }
     };
-    document.getElementById("zoomOut").onclick = () => {
+    zoomOut.onclick = () => {
         if (currentZoom > 0.5) {
             currentZoom -= 0.1;
-            board.style.transform = `scale(${currentZoom})`;
-            board.style.transformOrigin = "top center";
+            board.style.zoom = currentZoom;
         }
     };
 
-    // زر العروض
     const dealsBtn = document.getElementById("dealsBtn");
     if (dealsBtn) dealsBtn.onclick = () => window.open('deals.html', '_blank');
 
-    // البحث
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
         sIn.oninput = (e) => UI.filterCards(e.target.value.toLowerCase().trim(), sTy.value);
     }
 
-    // الاستيراد المطور
     const importBtn = document.getElementById("importBtn");
     const fileInput = document.getElementById("fileInput");
     if (importBtn && fileInput) {
@@ -119,42 +114,21 @@ function initGlobalListeners() {
                 try {
                     if (ext === 'json') {
                         const data = JSON.parse(content);
-                        const db = await Storage.openDB();
-                        const tx = db.transaction("notes", "readwrite");
-                        await tx.objectStore("notes").clear();
-                        data.forEach(item => tx.objectStore("notes").add(item));
+                        await Storage.importAllCards(data);
                         location.reload();
                     } else {
-                        const newCard = {
-                            id: "card_" + Date.now(),
+                        UI.addCard({
                             title: file.name.replace(`.${ext}`, ""),
                             html: ext === 'html' ? content : content.replace(/\n/g, '<br>'),
-                            tags: "مستورد", color: "#ffffff", targetTime: 0, dir: "rtl"
-                        };
-                        UI.addCard(newCard);
-                        await Storage.saveAllCards();
+                            tags: "مستورد"
+                        });
+                        Storage.saveAllCards();
                     }
                 } catch (err) { alert("خطأ في الملف!"); }
             };
             reader.readAsText(file);
         };
     }
-
-    // إدارة أحداث البطاقة (Minimize / Maximize) عبر الـ Delegation
-    board.addEventListener('click', (e) => {
-        const card = e.target.closest('.card');
-        if (!card) return;
-
-        if (e.target.classList.contains('btn-minimize')) {
-            card.classList.toggle('minimized');
-            const display = card.querySelector('.display');
-            display.style.display = display.style.display === 'none' ? 'block' : 'none';
-        }
-
-        if (e.target.classList.contains('btn-maximize')) {
-            card.classList.toggle('full-screen');
-        }
-    });
 
     // Context Menu
     const menu = document.getElementById("contextMenu");
@@ -171,13 +145,17 @@ function initGlobalListeners() {
     document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
 }
 
-// ====== AUTO SAVE ======
+/* ====== 3. UTILS ====== */
 function initAutoSave() {
     const observer = new MutationObserver(() => Storage.saveAllCards());
-    observer.observe(document.getElementById("board"), { childList: true, subtree: true, characterData: true });
+    observer.observe(document.getElementById("board"), { 
+        childList: true, 
+        subtree: true, 
+        characterData: true, 
+        attributes: true
+    });
 }
 
-// ====== ADS INJECTION ======
 function injectAdScript() {
     const adScript = document.createElement('script');
     adScript.type = 'text/javascript';
