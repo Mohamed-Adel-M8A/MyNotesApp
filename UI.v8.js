@@ -8,11 +8,9 @@ import {
 } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 export function addCard(data = {}) {
-    
     const board = document.getElementById("board");
     if (!board) return;
 
-    // إعداد البيانات الافتراضية
     const id = data.id || crypto.randomUUID();
     const title = data.title || 'عنوان جديد';
     const html = data.html || '';
@@ -29,7 +27,6 @@ export function addCard(data = {}) {
     card.dataset.tags = tags.toLowerCase();
     card.dataset.targettime = targetTime;
     
-    // تطبيق الأبعاد والستايل
     card.style.backgroundColor = color;
     card.style.width = width;
     card.style.height = height;
@@ -79,51 +76,39 @@ export function addCard(data = {}) {
     const tagsList = card.querySelector('.tags-list');
     const tagInput = card.querySelector('.tag-input');
 
-    // فتح وإغلاق القائمة
     card.querySelector('.dropdown-btn').onclick = (e) => {
         e.stopPropagation();
         const isHidden = menu.style.display === "none";
         document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
-
         if (isHidden) {
             menu.style.display = "flex";
             card.style.height = "auto";
         } else {
             menu.style.display = "none";
-            saveAllCards(); 
+            saveAllCards();
         }
     };
 
-    // وظيفة المشاركة السريعة
     card.querySelector('.quick-share-btn').onclick = async (e) => {
         e.stopPropagation();
-        const noteTitle = card.querySelector('.title').textContent;
-        const noteContent = card.querySelector('.display').textContent;
+        const t = card.querySelector('.title').innerText;
+        const c = card.querySelector('.display').innerText;
+        const shareText = `📍 ${t}\n\n${c}\n\nتم الإرسال عبر منظم أفكاري 🚀`;
         
-        const shareData = {
-            title: noteTitle,
-            text: `📍 ${noteTitle}\n\n${noteContent}\n\nتم الإرسال عبر منظم أفكاري 🚀\n`,
-            url: window.location.href
-        };
-
-        try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
-                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
-                alert("تم نسخ الملاحظة.. متصفحك لا يدعم المشاركة المباشرة.");
-            }
-        } catch (err) {
-            console.error("خطأ في المشاركة:", err);
+        if (navigator.share) {
+            try { await navigator.share({ title: t, text: shareText, url: window.location.href }); } 
+            catch (err) { console.warn(err); }
+        } else {
+            await navigator.clipboard.writeText(shareText);
+            alert("تم نسخ الملاحظة للحافظة!");
         }
     };
 
-    // وضع التعديل
     card.querySelector('.edit-toggle').onclick = (e) => {
-        const isEditable = display.contentEditable === "true";
-        display.contentEditable = !isEditable;
-        e.target.textContent = isEditable ? "✏️" : "✅";
-        if (!isEditable) {
+        const isEdit = display.contentEditable === "true";
+        display.contentEditable = !isEdit;
+        e.target.textContent = isEdit ? "✏️" : "✅";
+        if (!isEdit) {
             display.focus();
             card.classList.add('editing');
         } else {
@@ -132,32 +117,21 @@ export function addCard(data = {}) {
         }
     };
 
-    // تغيير الاتجاه
     card.querySelector('.dir-toggle').onclick = () => {
         card.dir = card.dir === "rtl" ? "ltr" : "rtl";
         saveAllCards();
     };
 
-    // لوحة الألوان
     const palette = card.querySelector('.color-palette');
-    const bgColors = ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'];
-    bgColors.forEach(clr => {
+    ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'].forEach(clr => {
         const swatch = document.createElement("button");
         swatch.className = "color-swatch";
         swatch.style.backgroundColor = clr;
-        swatch.onclick = () => {
-            card.style.backgroundColor = clr;
-            saveAllCards();
-        };
+        swatch.onclick = () => { card.style.backgroundColor = clr; saveAllCards(); };
         palette.appendChild(swatch);
     });
 
-    // الوسوم
-    if (tags) {
-        tags.split(',').forEach(t => {
-            if (t.trim()) createTag(t.trim(), tagsList, card);
-        });
-    }
+    if (tags) tags.split(',').forEach(t => t.trim() && createTag(t.trim(), tagsList, card));
 
     tagInput.onkeydown = (e) => {
         if (e.key === "Enter" && tagInput.value.trim()) {
@@ -166,13 +140,12 @@ export function addCard(data = {}) {
         }
     };
 
-    // المؤقت
     card.querySelector('.start-timer-btn').onclick = () => {
         const d = parseInt(card.querySelector('.day-in').value) || 0;
         const h = parseInt(card.querySelector('.hour-in').value) || 0;
         const m = parseInt(card.querySelector('.min-in').value) || 0;
         const s = parseInt(card.querySelector('.sec-in').value) || 0;
-        const totalMs = ( (d * 86400) + (h * 3600) + (m * 60) + s ) * 1000;
+        const totalMs = ((d * 86400) + (h * 3600) + (m * 60) + s) * 1000;
         if (totalMs > 0) {
             const target = Date.now() + totalMs;
             card.dataset.targettime = target;
@@ -183,22 +156,14 @@ export function addCard(data = {}) {
         }
     };
 
-    // حفظ الحجم عند انتهاء السحب
-    card.onmouseup = () => {
-        saveAllCards(); 
-    };
+    card.onmouseup = () => saveAllCards();
 
-    // التصدير والحذف
     card.querySelector('.export-btn').onclick = () => exportSingleCardAsTxt(card);
     card.querySelector('.export-pdf-btn').onclick = () => exportSingleCardAsPDF(card);
     card.querySelector('.export-html-btn').onclick = () => exportSingleCardAsHTML(card);
     card.querySelector('.export-md-btn').onclick = () => exportSingleCardAsMD(card);
-
     card.querySelector('.delete-card-btn').onclick = () => {
-        if (confirm("هل أنت متأكد من حذف هذه البطاقة؟")) {
-            card.remove();
-            saveAllCards();
-        }
+        if (confirm("حذف هذه البطاقة؟")) { card.remove(); saveAllCards(); }
     };
 
     if (targetTime > Date.now()) {
@@ -207,25 +172,19 @@ export function addCard(data = {}) {
 
     const resizeObserver = new MutationObserver(() => saveAllCards());
     resizeObserver.observe(card, { attributes: true, attributeFilter: ['style'] });
-    
+
     board.prepend(card);
+    saveAllCards();
 }
 
 export function filterCards(query, type) {
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
+    document.querySelectorAll('.card').forEach(card => {
         const title = card.querySelector('.title').textContent.toLowerCase();
         const tags = card.dataset.tags || "";
         const content = card.querySelector('.display').textContent.toLowerCase();
-        let isMatch = false;
-        if (type === 'name') {
-            isMatch = title.includes(query);
-        } else if (type === 'tag') {
-            isMatch = tags.includes(query);
-        } else if (type === 'content') {
-            isMatch = content.includes(query);
-        }
-
+        let isMatch = (type === 'name' && title.includes(query)) || 
+                      (type === 'tag' && tags.includes(query)) || 
+                      (type === 'content' && content.includes(query));
         card.style.display = isMatch ? "flex" : "none";
     });
 }
@@ -244,9 +203,7 @@ function createTag(text, container, card) {
 }
 
 function updateTagsDataset(card) {
-    const allTags = Array.from(card.querySelectorAll('.tag')).map(t => 
-        t.textContent.replace('×', '').trim()
-    );
+    const allTags = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent.replace('×', '').trim());
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
