@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأدوات المختارة | Curated Tools</title>
+    <style>
+        /* CSS المدمج */
+        :root {
+            --bg: #ffffff;
+            --surface: #fafafa;
+            --border: #ececec;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --accent: #000000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .item:hover img {
+            transform: scale(1.03);
+        }
+
+        .item-info h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .item-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            min-height: 45px;
+        }
+
+        .buy-link {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 2px;
+            width: fit-content;
+            transition: opacity 0.2s;
+        }
+
+        .buy-link:hover {
+            opacity: 0.6;
+        }
+
+        footer {
+            margin-top: 100px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 20px 15px; }
+            header { margin-bottom: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>أدوات الإنتاجية المختارة</h1>
+        </header>
+
+        <div class="grid">
+            <div class="item">
+                <div class="image-wrapper">
+                    <img src="https://ae-pic-a1.aliexpress-media.com/kf/Scb6f1cdaa38d4da499d03721eefaf045d.jpg" alt="LED Desk Lamp">
+                </div>
+                <div class="item-info">
+                    <h2>مصباح LED مكتبي ذكي</h2>
+                    <p>إضاءة قابلة للتعديل بـ 3 مستويات سطوع، مصممة لحماية العين أثناء جلسات العمل الطويلة.</p>
+                    <a href="https://s.click.aliexpress.com/e/_c3P68kef" target="_blank" class="buy-link">عرض التفاصيل على AliExpress ←</a>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="image-wrapper" style="display: flex; align-items: center; justify-content: center; background: #fafafa; color: #ccc;">
+                    <span>قريباً</span>
+                </div>
+                <div class="item-info">
+                    <h2>أداة تنظيمية</h2>
+                    <p>يتم اختيار أفضل المنتجات التي تتماشى مع بيئة عملك وتذاكرك بعناية.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>إخلاء مسؤولية: الروابط أعلاه هي روابط إحالة، قد نحصل على عمولة عند الشراء دون أي تكلفة إضافية عليك.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
