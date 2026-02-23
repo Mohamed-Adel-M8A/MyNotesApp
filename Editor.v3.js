@@ -28,7 +28,7 @@ export function applyStyle(tag, props = {}, attributes = {}) {
 }
 
 /**
- * دالة بناء وعرض قائمة التنسيق (Context Menu) - تم تعديلها لتصبح طولية
+ * دالة بناء وعرض قائمة التنسيق (Context Menu) - معدلة للجوال والكمبيوتر
  */
 export function renderContextMenu(e, menu, display) {
     menu.innerHTML = ''; 
@@ -36,19 +36,25 @@ export function renderContextMenu(e, menu, display) {
     const makeBtn = (txt, handler, isColor = false, colorValue = "") => {
         const btn = document.createElement("button");
         btn.innerHTML = txt;
+        
         if (isColor) {
             btn.style.cssText = `background-color: ${colorValue}; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #ccc; padding: 0; margin: 2px; flex-shrink: 0;`;
         } else {
-            // تنسيق الأزرار النصية لتناسب القائمة الطولية
             btn.style.cssText = `padding: 6px 10px; text-align: right; width: 100%; border: none; background: none; cursor: pointer; font-size: 13px; display: block;`;
         }
 
-        btn.onclick = (event) => {
+        // التعديل الجوهري: منع فقدان التظليل عند الضغط (مهم للجوال)
+        const executeAction = (event) => {
+            event.preventDefault(); 
             event.stopPropagation();
             handler();
             saveAllCards(); 
             menu.style.display = "none";
         };
+
+        btn.onmousedown = executeAction; // للكمبيوتر
+        btn.ontouchstart = executeAction; // للجوال
+        
         return btn;
     };
 
@@ -101,7 +107,7 @@ export function renderContextMenu(e, menu, display) {
     const colorBtns = textColors.map(c => makeBtn("", () => document.execCommand('foreColor', false, c), true, c));
     addGroup("ألوان النص", ...colorBtns);
 
-    // --- المجموعة 3: أحجام العناوين (إضافة H3 و H5) ---
+    // --- المجموعة 3: أحجام العناوين ---
     const sizes = [
         { label: 'H2 عنوان رئيسي', tag: 'h2', size: '24px' },
         { label: 'H3 عنوان فرعي', tag: 'h3', size: '20px' },
@@ -114,7 +120,7 @@ export function renderContextMenu(e, menu, display) {
     ));
     addGroup("الأحجام", ...sizeBtns);
 
-    // --- إعدادات التموضع الطولي ---
+    // --- إعدادات التموضع والظهور ---
     menu.style.display = "flex";
     menu.style.flexDirection = "column";
     menu.style.width = "180px"; 
@@ -122,19 +128,17 @@ export function renderContextMenu(e, menu, display) {
     menu.style.boxShadow = "0 4px 15px rgba(0,0,0,0.15)";
     menu.style.borderRadius = "8px";
     menu.style.overflow = "hidden";
+    menu.style.position = "absolute";
+    menu.style.zIndex = "10000";
     
     let x = e.pageX;
     let y = e.pageY;
 
-    // منع خروج القائمة من حدود الشاشة
-    if (x + 180 > window.innerWidth) x -= 180;
+    // منع خروج القائمة من حدود الشاشة وتحسين التموضع للجوال
+    if (x + 180 > window.innerWidth) x = window.innerWidth - 190;
     if (y + 400 > window.innerHeight) y -= 350;
+    if (y < 0) y = 10;
 
     menu.style.top = `${y}px`;
     menu.style.left = `${x}px`;
-
 }
-
-
-
-
