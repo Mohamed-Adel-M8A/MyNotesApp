@@ -1,4 +1,4 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v5.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v6.js';
 import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v2.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.v3.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
@@ -19,6 +19,7 @@ export async function initApp() {
                 <select id="searchType">
                     <option value="name">بالعنوان</option>
                     <option value="tag">بالوسم</option>
+                    <option value="tag">بالمحتوي</option>
                 </select>
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
@@ -52,7 +53,6 @@ export async function initApp() {
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
-            // إضافة البطاقات المحفوظة مع الحفاظ على ترتيبها
             savedCards.forEach(cardData => UI.addCard(cardData));
         }
     } catch (e) {
@@ -186,3 +186,4 @@ document.addEventListener('selectionchange', () => {
         }
     }, 200);
 });
+
