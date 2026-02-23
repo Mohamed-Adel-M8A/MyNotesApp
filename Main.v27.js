@@ -92,15 +92,22 @@ function initGlobalListeners() {
                         await Storage.importAllCards(data);
                         location.reload();
                     } else if (ext === 'html') {
-                        // سحب محتوى العناوين والفقرات فقط لضمان سلامة التصميم
+                        // استخراج المحتوى وتنظيفه من الستايلات
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(content, 'text/html');
-                        const elements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6, p');
-                        const cleanHtml = Array.from(elements).map(el => el.outerHTML).join('');
                         
+                        // إزالة أي عناصر style أو script أو link قد تكون داخل الملف
+                        doc.querySelectorAll('style, script, link').forEach(el => el.remove());
+                        
+                        // إزالة الـ inline styles من جميع العناصر
+                        doc.querySelectorAll('*').forEach(el => el.removeAttribute('style'));
+
+                        // نأخذ الـ body فقط لمنع سحب هيدر الملف الأصلي
+                        const cleanHtml = doc.body.innerHTML;
+
                         UI.addCard({
-                            title: file.name.replace('.html', ""),
-                            html: cleanHtml || "محتوى مستورد (نصي)",
+                            title: file.name.replace(`.html`, ""),
+                            html: cleanHtml,
                             tags: "مستورد"
                         });
                         Storage.saveAllCards();
@@ -112,7 +119,7 @@ function initGlobalListeners() {
                         });
                         Storage.saveAllCards();
                     }
-                } catch (err) { alert("خطأ في معالجة الملف!"); }
+                } catch (err) { alert("خطأ في الملف!"); }
             };
             reader.readAsText(file);
         };
