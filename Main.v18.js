@@ -23,6 +23,9 @@ export async function initApp() {
             <button id="importBtn">📥 استيراد</button>
             <button id="exportTxtBtn">📃 TXT</button>
             <button id="exportPdfBtn">📄 PDF</button>
+            <button id="dealsBtn" style="border: 1px solid #000; background: #fff; font-weight: bold;">
+           🛒 أدوات الإنتاجية
+            </button>
             <input type="file" id="fileInput" style="display:none" accept=".json">
         </div>
     </header>
@@ -129,4 +132,12 @@ function injectAdScript() {
     adScript.async = true;
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
+}
+
+// داخل دالة initGlobalListeners في ملف main.js
+const dealsBtn = document.getElementById("dealsBtn");
+if (dealsBtn) {
+    dealsBtn.onclick = () => {
+        window.open('deals.html', '_blank');
+    };
 }
