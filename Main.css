@@ -81,11 +81,12 @@ header {
 
 /* ====== 3. BOARD & LAYOUT ====== */
 #board {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 25px;
   padding: 30px;
-  align-items: start;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 /* ====== 4. CARD COMPONENT (RESIZE ENABLED) ====== */
@@ -100,8 +101,9 @@ header {
   position: relative;
   box-shadow: var(--shadow);
   transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  resize: both; /* تم التعديل للسحب من الجهتين */
-  overflow: auto; /* تم التعديل ليعمل السحب */
+  resize: both;
+  overflow: visible;
+  max-width: 100%;
   min-height: 280px;
   min-width: 300px;
 }
@@ -149,6 +151,7 @@ header {
   word-wrap: break-word;
   overflow-wrap: break-word;
   line-height: 1.7;
+  overflow-y: auto;
 }
 
 .display:focus {
@@ -211,9 +214,10 @@ header {
   padding: 20px;
   margin-top: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: static; 
+  position: absolute; 
   width: 100%;
   z-index: 50;
+  bottom: 50px; left: 10px; right: 10px; width: auto;
 }
 
 .dropdown-grid {
@@ -374,6 +378,11 @@ header {
 .timer-done {
   border: 2px solid var(--danger) !important;
   animation: pulse 2s infinite;
+}
+
+.card.editing {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 @keyframes pulse {
