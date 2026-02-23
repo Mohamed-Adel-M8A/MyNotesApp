@@ -22,13 +22,6 @@ export async function initApp() {
                 </select>
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
-                
-                <div class="zoom-controls">
-                    <span>🔍</span>
-                    <button id="zoomOut">➖</button>
-                    <button id="zoomIn">➕</button>
-                </div>
-
                 <button id="exportTxtBtn">📃 TXT</button>
                 <button id="exportPdfBtn">📄 PDF</button>
             </div>
@@ -72,24 +65,6 @@ function initGlobalListeners() {
 
     document.getElementById("addCardBtn").onclick = () => UI.addCard({});
 
-    // تحسين نظام الزووم (Zoom)
-    let currentZoom = 1;
-    const zoomIn = document.getElementById("zoomIn");
-    const zoomOut = document.getElementById("zoomOut");
-
-    zoomIn.onclick = () => {
-        if (currentZoom < 1.5) {
-            currentZoom += 0.1;
-            board.style.zoom = currentZoom;
-        }
-    };
-    zoomOut.onclick = () => {
-        if (currentZoom > 0.5) {
-            currentZoom -= 0.1;
-            board.style.zoom = currentZoom;
-        }
-    };
-
     const dealsBtn = document.getElementById("dealsBtn");
     if (dealsBtn) dealsBtn.onclick = () => window.open('deals.html', '_blank');
 
@@ -110,27 +85,39 @@ function initGlobalListeners() {
             const ext = file.name.split('.').pop().toLowerCase();
 
             reader.onload = async (event) => {
-                const content = event.target.result;
+                let content = event.target.result;
                 try {
                     if (ext === 'json') {
                         const data = JSON.parse(content);
                         await Storage.importAllCards(data);
                         location.reload();
+                    } else if (ext === 'html') {
+                        // سحب محتوى العناوين والفقرات فقط لضمان سلامة التصميم
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(content, 'text/html');
+                        const elements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6, p');
+                        const cleanHtml = Array.from(elements).map(el => el.outerHTML).join('');
+                        
+                        UI.addCard({
+                            title: file.name.replace('.html', ""),
+                            html: cleanHtml || "محتوى مستورد (نصي)",
+                            tags: "مستورد"
+                        });
+                        Storage.saveAllCards();
                     } else {
                         UI.addCard({
                             title: file.name.replace(`.${ext}`, ""),
-                            html: ext === 'html' ? content : content.replace(/\n/g, '<br>'),
+                            html: content.replace(/\n/g, '<br>'),
                             tags: "مستورد"
                         });
                         Storage.saveAllCards();
                     }
-                } catch (err) { alert("خطأ في الملف!"); }
+                } catch (err) { alert("خطأ في معالجة الملف!"); }
             };
             reader.readAsText(file);
         };
     }
 
-    // Context Menu
     const menu = document.getElementById("contextMenu");
     document.addEventListener("click", () => menu.style.display = "none");
     document.body.oncontextmenu = (e) => {
@@ -163,4 +150,3 @@ function injectAdScript() {
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
 }
-
