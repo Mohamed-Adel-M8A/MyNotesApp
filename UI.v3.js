@@ -11,6 +11,7 @@ export function addCard(data = {}) {
     const board = document.getElementById("board");
     if (!board) return;
 
+    // إعداد البيانات الافتراضية
     const id = data.id || crypto.randomUUID();
     const title = data.title || 'عنوان جديد';
     const html = data.html || '';
@@ -18,8 +19,8 @@ export function addCard(data = {}) {
     const tags = data.tags || '';
     const targetTime = parseInt(data.targetTime || 0);
     const dir = data.dir || 'rtl';
-    const width = data.width || '320px';
-    const height = data.height || '250px';
+    const width = data.width || '350px';
+    const height = data.height || '280px';
 
     const card = document.createElement("div");
     card.className = "card";
@@ -27,23 +28,21 @@ export function addCard(data = {}) {
     card.dataset.tags = tags.toLowerCase();
     card.dataset.targettime = targetTime;
     
+    // تطبيق الأبعاد والستايل
     card.style.backgroundColor = color;
     card.style.width = width;
     card.style.height = height;
-    card.style.resize = "both";
-    card.style.overflow = "auto";
-    card.style.display = "flex";
-    card.style.flexDirection = "column";
     card.dir = dir;
 
     card.innerHTML = `
         <div class="edit-tools">
-            <button class="edit-toggle">✏️</button>
-            <button class="dir-toggle">↔️</button>
+            <button class="edit-toggle" title="تعديل">✏️</button>
+            <button class="dir-toggle" title="تغيير الاتجاه">↔️</button>
         </div>
         <div class="title" contenteditable="true">${title}</div>
-        <div class="timer-box"></div>
-        <div class="display" contenteditable="false" style="flex-grow: 1; min-height: 50px;">${html}</div>
+        <div class="timer-box" style="${targetTime > Date.now() ? '' : 'display:none'}"></div>
+        <div class="display" contenteditable="false">${html}</div>
+        
         <div class="dropdown-controls">
             <button class="dropdown-btn">⚙️ الأدوات والإعدادات</button>
             <div class="dropdown-menu" style="display:none;">
@@ -74,6 +73,7 @@ export function addCard(data = {}) {
     const tagsList = card.querySelector('.tags-list');
     const tagInput = card.querySelector('.tag-input');
 
+    // فتح وإغلاق القائمة
     card.querySelector('.dropdown-btn').onclick = (e) => {
         e.stopPropagation();
         const isHidden = menu.style.display === "none";
@@ -81,19 +81,27 @@ export function addCard(data = {}) {
         menu.style.display = isHidden ? "flex" : "none";
     };
 
+    // وضع التعديل
     card.querySelector('.edit-toggle').onclick = (e) => {
         const isEditable = display.contentEditable === "true";
         display.contentEditable = !isEditable;
         e.target.textContent = isEditable ? "✏️" : "✅";
-        if (!isEditable) display.focus();
-        saveAllCards();
+        if (!isEditable) {
+            display.focus();
+            card.classList.add('editing');
+        } else {
+            card.classList.remove('editing');
+            saveAllCards();
+        }
     };
 
+    // تغيير الاتجاه
     card.querySelector('.dir-toggle').onclick = () => {
         card.dir = card.dir === "rtl" ? "ltr" : "rtl";
         saveAllCards();
     };
 
+    // لوحة الألوان
     const palette = card.querySelector('.color-palette');
     const bgColors = ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'];
     bgColors.forEach(clr => {
@@ -107,6 +115,7 @@ export function addCard(data = {}) {
         palette.appendChild(swatch);
     });
 
+    // الوسوم
     if (tags) {
         tags.split(',').forEach(t => {
             if (t.trim()) createTag(t.trim(), tagsList, card);
@@ -120,6 +129,7 @@ export function addCard(data = {}) {
         }
     };
 
+    // المؤقت
     card.querySelector('.start-timer-btn').onclick = () => {
         const d = parseInt(card.querySelector('.day-in').value) || 0;
         const h = parseInt(card.querySelector('.hour-in').value) || 0;
@@ -129,22 +139,26 @@ export function addCard(data = {}) {
         if (totalMs > 0) {
             const target = Date.now() + totalMs;
             card.dataset.targettime = target;
-            startCardTimer(card, target, card.querySelector('.timer-box'));
+            const tBox = card.querySelector('.timer-box');
+            tBox.style.display = 'inline-flex';
+            startCardTimer(card, target, tBox);
             saveAllCards();
         }
     };
 
+    // حفظ الحجم عند انتهاء السحب
     card.onmouseup = () => {
-        saveAllCards();
+        saveAllCards(); 
     };
 
+    // التصدير والحذف
     card.querySelector('.export-btn').onclick = () => exportSingleCardAsTxt(card);
     card.querySelector('.export-pdf-btn').onclick = () => exportSingleCardAsPDF(card);
     card.querySelector('.export-html-btn').onclick = () => exportSingleCardAsHTML(card);
     card.querySelector('.export-md-btn').onclick = () => exportSingleCardAsMD(card);
 
     card.querySelector('.delete-card-btn').onclick = () => {
-        if (confirm("حذف نهائي؟")) {
+        if (confirm("هل أنت متأكد من حذف هذه البطاقة؟")) {
             card.remove();
             saveAllCards();
         }
