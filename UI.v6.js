@@ -185,7 +185,16 @@ export function filterCards(query, type) {
     cards.forEach(card => {
         const title = card.querySelector('.title').textContent.toLowerCase();
         const tags = card.dataset.tags || "";
-        const isMatch = (type === 'name') ? title.includes(query) : tags.includes(query);
+        const content = card.querySelector('.display').textContent.toLowerCase();
+        let isMatch = false;
+        if (type === 'name') {
+            isMatch = title.includes(query);
+        } else if (type === 'tag') {
+            isMatch = tags.includes(query);
+        } else if (type === 'content') {
+            isMatch = content.includes(query);
+        }
+
         card.style.display = isMatch ? "flex" : "none";
     });
 }
@@ -210,6 +219,7 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
 
 
 
