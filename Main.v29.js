@@ -28,7 +28,7 @@ export async function initApp() {
 
             <div class="promo-tools">
                 <button id="dealsBtn" class="deals-btn-style">
-                    🛒 أدوات الإنتاجية ↗
+                    أدوات الإنتاجية ↗
                 </button>
             </div>
             
@@ -160,3 +160,4 @@ function injectAdScript() {
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
 }
+
