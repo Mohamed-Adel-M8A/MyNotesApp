@@ -1,5 +1,5 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v2.js';
-import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v3.js';
+import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v2.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
@@ -15,15 +15,15 @@ export async function initApp() {
         </div>
         <div class="toolbar">
             <div class="main-tools">
-                <input type="text" id="searchInput" placeholder="ابحث...">
+                <input type="text" id="searchInput" placeholder="ابحث عن بطاقة...">
                 <select id="searchType">
-                    <option value="name">العنوان</option>
-                    <option value="tag">الوسم</option>
+                    <option value="name">بالعنوان</option>
+                    <option value="tag">بالوسم</option>
                 </select>
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
-                <button id="exportTxtBtn">📃 TXT</button>
-                <button id="exportPdfBtn">📄 PDF</button>
+                <button id="exportTxtBtn">📃 تصدير TXT</button>
+                <button id="exportPdfBtn">📄 تصدير PDF</button>
             </div>
 
             <div class="promo-tools">
@@ -52,10 +52,11 @@ export async function initApp() {
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
+            // إضافة البطاقات المحفوظة مع الحفاظ على ترتيبها
             savedCards.forEach(cardData => UI.addCard(cardData));
         }
     } catch (e) {
-        console.warn("Load Error.");
+        console.warn("حدث خطأ أثناء تحميل البيانات السابقة.");
     }
 }
 
@@ -63,17 +64,21 @@ export async function initApp() {
 function initGlobalListeners() {
     const board = document.getElementById("board");
 
+    // زر إضافة بطاقة جديدة
     document.getElementById("addCardBtn").onclick = () => UI.addCard({});
 
+    // روابط أدوات الإنتاجية
     const dealsBtn = document.getElementById("dealsBtn");
     if (dealsBtn) dealsBtn.onclick = () => window.open('deals.html', '_blank');
 
+    // نظام البحث والفلترة
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
         sIn.oninput = (e) => UI.filterCards(e.target.value.toLowerCase().trim(), sTy.value);
     }
 
+    // نظام الاستيراد
     const importBtn = document.getElementById("importBtn");
     const fileInput = document.getElementById("fileInput");
     if (importBtn && fileInput) {
@@ -89,25 +94,17 @@ function initGlobalListeners() {
                 try {
                     if (ext === 'json') {
                         const data = JSON.parse(content);
-                        await Storage.importAllCards(data);
-                        location.reload();
+                        const success = await Storage.importAllCards(data);
+                        if (success) location.reload();
                     } else if (ext === 'html') {
-                        // استخراج المحتوى وتنظيفه من الستايلات
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(content, 'text/html');
-                        
-                        // إزالة أي عناصر style أو script أو link قد تكون داخل الملف
                         doc.querySelectorAll('style, script, link').forEach(el => el.remove());
-                        
-                        // إزالة الـ inline styles من جميع العناصر
                         doc.querySelectorAll('*').forEach(el => el.removeAttribute('style'));
-
-                        // نأخذ الـ body فقط لمنع سحب هيدر الملف الأصلي
-                        const cleanHtml = doc.body.innerHTML;
-
+                        
                         UI.addCard({
                             title: file.name.replace(`.html`, ""),
-                            html: cleanHtml,
+                            html: doc.body.innerHTML,
                             tags: "مستورد"
                         });
                         Storage.saveAllCards();
@@ -119,12 +116,13 @@ function initGlobalListeners() {
                         });
                         Storage.saveAllCards();
                     }
-                } catch (err) { alert("خطأ في الملف!"); }
+                } catch (err) { alert("الملف تالف أو غير مدعوم!"); }
             };
             reader.readAsText(file);
         };
     }
 
+    // القائمة الجانبية (Context Menu) للمحرر
     const menu = document.getElementById("contextMenu");
     document.addEventListener("click", () => menu.style.display = "none");
     document.body.oncontextmenu = (e) => {
@@ -135,18 +133,23 @@ function initGlobalListeners() {
         }
     };
 
+    // أزرار التصدير الكلي
     document.getElementById("exportTxtBtn").onclick = () => Exporter.exportToTxt();
     document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
 }
 
 /* ====== 3. UTILS ====== */
 function initAutoSave() {
-    const observer = new MutationObserver(() => Storage.saveAllCards());
+    const observer = new MutationObserver(() => {
+        Storage.saveAllCards();
+    });
+
     observer.observe(document.getElementById("board"), { 
         childList: true, 
         subtree: true, 
         characterData: true, 
-        attributes: true
+        attributes: true,
+        attributeFilter: ['style', 'dir'] 
     });
 }
 
