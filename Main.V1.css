@@ -105,8 +105,8 @@ header {
   overflow: hidden; 
   flex: 0 0 auto;
   margin: 5px;
-  min-height: 280px;
-  min-width: 300px;
+  min-height: 300px;
+  min-width: 320px;
   max-width: 100%;
 }
 
@@ -397,4 +397,5 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
