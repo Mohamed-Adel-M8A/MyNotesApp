@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأدوات المختارة | Curated Tools</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-512.png">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-270WV92FGF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-270WV92FGF', {
+        'page_title': 'الأدوات المختارة',
+        'page_path': '/deals.html',
+        'anonymize_ip': true
+      });
+    </script>
+
     <style>
         :root {
             --bg: #ffffff;
@@ -24,7 +41,6 @@
             line-height: 1.6;
         }
 
-        /* تحسين الهيدر */
         nav {
             position: sticky;
             top: 0;
@@ -188,7 +204,12 @@
                 <div class="item-info">
                     <h2>مصباح LED مكتبي ذكي</h2>
                     <p>إضاءة قابلة للتعديل بـ 3 مستويات سطوع، مصممة لحماية العين أثناء جلسات العمل الطويلة.</p>
-                    <a href="https://s.click.aliexpress.com/e/_c3P68kef" target="_blank" class="buy-link">التفاصيل على AliExpress</a>
+                    <a href="https://s.click.aliexpress.com/e/_c3P68kef" 
+                       target="_blank" 
+                       class="buy-link" 
+                       onclick="gtag('event', 'click_deal', {'deal_name': 'LED_Lamp'});">
+                       التفاصيل على AliExpress
+                    </a>
                 </div>
             </div>
 
@@ -199,7 +220,12 @@
                 <div class="item-info">
                     <h2>وسادة ملاحظات قانونية (Legal Pad)</h2>
                     <p>دفتر علوي بـ 50 ورقة، تصميم قلاب مريح للتمزيق السلس، ورق عالي الجودة مقاوم للحبر.</p>
-                    <a href="https://s.click.aliexpress.com/e/_c3uBtw8x" target="_blank" class="buy-link">التفاصيل على AliExpress</a>
+                    <a href="https://s.click.aliexpress.com/e/_c3uBtw8x" 
+                       target="_blank" 
+                       class="buy-link"
+                       onclick="gtag('event', 'click_deal', {'deal_name': 'Legal_Pad'});">
+                       التفاصيل على AliExpress
+                    </a>
                 </div>
             </div>
         </div>
@@ -212,4 +238,3 @@
 
 </body>
 </html>
-
