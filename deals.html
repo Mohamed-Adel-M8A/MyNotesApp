@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأدوات المختارة | Curated Tools</title>
     <style>
-        /* CSS المدمج */
         :root {
             --bg: #ffffff;
-            --surface: #fafafa;
-            --border: #ececec;
-            --text-primary: #111111;
+            --surface: #f9f9f9;
+            --border: #eeeeee;
+            --text-primary: #1a1a1a;
             --text-secondary: #666666;
-            --accent: #000000;
+            --accent: #2563eb;
+            --black: #000000;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,107 +22,162 @@
             background-color: var(--bg);
             color: var(--text-primary);
             line-height: 1.6;
-            padding: 40px 20px;
         }
 
-        .container {
-            max-width: 900px;
+        /* تحسين الهيدر */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            max-width: 1000px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--accent); }
+
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
         }
 
         header {
-            margin-bottom: 60px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            margin-bottom: 50px;
+            text-align: center;
         }
 
         header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
         .item {
             display: flex;
             flex-direction: column;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .item:hover {
+            border-color: var(--black);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transform: translateY(-5px);
         }
 
         .image-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
             background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .image-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.5s ease;
         }
 
-        .item:hover img {
-            transform: scale(1.03);
-        }
+        .item:hover img { transform: scale(1.08); }
 
         .item-info h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
         .item-info p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-secondary);
-            margin-bottom: 20px;
-            min-height: 45px;
+            margin-bottom: 25px;
+            min-height: 60px;
         }
 
         .buy-link {
-            display: inline-block;
+            display: block;
+            text-align: center;
             text-decoration: none;
-            color: var(--accent);
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 2px;
-            width: fit-content;
-            transition: opacity 0.2s;
+            background: var(--black);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
         }
 
-        .buy-link:hover {
-            opacity: 0.6;
-        }
+        .buy-link:hover { background: var(--accent); }
 
         footer {
-            margin-top: 100px;
-            padding-top: 20px;
+            margin-top: 80px;
+            padding: 40px 0;
             border-top: 1px solid var(--border);
-            font-size: 0.75rem;
+            text-align: center;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
-            body { padding: 20px 15px; }
-            header { margin-bottom: 40px; }
+            header h1 { font-size: 1.5rem; }
+            .grid { gap: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="back-link">
+                <span>←</span> العودة للرئيسية
+            </a>
+            <div style="font-weight: 900; font-size: 1.2rem;">توصياتنا</div>
+        </div>
+    </nav>
+
     <div class="container">
         <header>
             <h1>أدوات الإنتاجية المختارة</h1>
+            <p>مجموعة منتقاة بعناية لتحسين بيئة عملك وزيادة تركيزك.</p>
         </header>
 
         <div class="grid">
@@ -133,27 +188,27 @@
                 <div class="item-info">
                     <h2>مصباح LED مكتبي ذكي</h2>
                     <p>إضاءة قابلة للتعديل بـ 3 مستويات سطوع، مصممة لحماية العين أثناء جلسات العمل الطويلة.</p>
-                    <a href="https://s.click.aliexpress.com/e/_c3P68kef" target="_blank" class="buy-link">عرض التفاصيل على AliExpress ←</a>
+                    <a href="https://s.click.aliexpress.com/e/_c3P68kef" target="_blank" class="buy-link">التفاصيل على AliExpress</a>
                 </div>
             </div>
 
-<div class="item">
-    <div class="image-wrapper">
-        <img src="https://ae-pic-a1.aliexpress-media.com/kf/S44f3a7ca8db8438cbd99f88f121a8e7ah.jpg_220x220.jpg" alt="Legal Pad Notebook">
-    </div>
-    <div class="item-info">
-        <h2>وسادة ملاحظات قانونية (Legal Pad)</h2>
-        <p>دفتر ملاحظات علوي بـ 50 ورقة، تصميم قلاب مريح للتمزيق السلس، ورق عالي الجودة مقاوم للحبر مثالي لتنظيم الأفكار والعمل.</p>
-        <a href="https://s.click.aliexpress.com/e/_c3uBtw8x" target="_blank" class="buy-link">عرض التفاصيل على AliExpress ←</a>
-    </div>
-</div>
+            <div class="item">
+                <div class="image-wrapper">
+                    <img src="https://ae-pic-a1.aliexpress-media.com/kf/S44f3a7ca8db8438cbd99f88f121a8e7ah.jpg_220x220.jpg" alt="Legal Pad Notebook">
+                </div>
+                <div class="item-info">
+                    <h2>وسادة ملاحظات قانونية (Legal Pad)</h2>
+                    <p>دفتر علوي بـ 50 ورقة، تصميم قلاب مريح للتمزيق السلس، ورق عالي الجودة مقاوم للحبر.</p>
+                    <a href="https://s.click.aliexpress.com/e/_c3uBtw8x" target="_blank" class="buy-link">التفاصيل على AliExpress</a>
+                </div>
+            </div>
         </div>
 
         <footer>
-            <p>إخلاء مسؤولية: الروابط أعلاه هي روابط إحالة، قد نحصل على عمولة عند الشراء دون أي تكلفة إضافية عليك.</p>
+            <p>© 2026 جميع الحقوق محفوظة لمدونة الإنتاجية.</p>
+            <p style="margin-top: 10px;">إخلاء مسؤولية: الروابط أعلاه هي روابط إحالة، قد نحصل على عمولة عند الشراء دون أي تكلفة إضافية عليك.</p>
         </footer>
     </div>
 
 </body>
-
 </html>
