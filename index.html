@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظم أفكاري | النسخة الاحترافية</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v5.css">
+    <title>MyNotes | منظم أفكاري</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
+
+    <meta property="og:title" content="MyNotes - منظم أفكاري">
+    <meta property="og:description" content="مفكرة احترافية لإدارة ملاحظاتك بذكاء.">
+    <meta property="og:image" content="icon-512.png">
+    <meta property="og:url" content="https://mohamed-adel-m8a.github.io/MyNotesApp/">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-270WV92FGF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-270WV92FGF', { 'anonymize_ip': true, 'cookie_flags': 'SameSite=None;Secure' });
+      window.trackAppEvent = function(eventName, category) {
+        gtag('event', eventName, { 'event_category': category, 'send_to': 'G-270WV92FGF' });
+      };
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-
-    
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-270WV92FGF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-270WV92FGF', {
-    'anonymize_ip': true,
-    'cookie_flags': 'SameSite=None;Secure'
-  });
-
-  window.trackAppEvent = function(eventName, category) {
-    gtag('event', eventName, {
-      'event_category': category,
-      'send_to': 'G-270WV92FGF'
-    });
-  };
-</script>
-
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v5.css">
 </head>
 <body>
     <div id="app-root"></div>
