@@ -44,28 +44,33 @@ export function addCard(data = {}) {
         <div class="timer-box" style="${targetTime > Date.now() ? '' : 'display:none'}"></div>
         <div class="display" contenteditable="false">${html}</div>
         
-        <div class="dropdown-controls">
-            <button class="dropdown-btn">⚙️ الأدوات والإعدادات</button>
-            <div class="dropdown-menu" style="display:none;">
-                <div class="dropdown-grid">
-                    <input type="number" class="day-in" placeholder="أيام" min="0">
-                    <input type="number" class="hour-in" placeholder="ساعات" min="0" max="23">
-                    <input type="number" class="min-in" placeholder="دقائق" min="0" max="59">
-                    <input type="number" class="sec-in" placeholder="ثواني" min="0" max="59">
-                    <button class="start-timer-btn">▶️ بدء المؤقت</button>
-                    <button class="export-btn">📃 TXT</button>
-                    <button class="export-pdf-btn">📄 PDF</button> 
-                    <button class="export-html-btn">🌐 HTML</button>
-                    <button class="export-md-btn">📝 Markdown</button>
+        <div class="card-footer-actions" style="display: flex; gap: 8px; margin-top: auto; padding-top: 10px;">
+            <div class="dropdown-controls" style="flex: 1;">
+                <button class="dropdown-btn" style="width: 100%;">⚙️ الإعدادات</button>
+                <div class="dropdown-menu" style="display:none;">
+                    <div class="dropdown-grid">
+                        <input type="number" class="day-in" placeholder="أيام" min="0">
+                        <input type="number" class="hour-in" placeholder="ساعات" min="0" max="23">
+                        <input type="number" class="min-in" placeholder="دقائق" min="0" max="59">
+                        <input type="number" class="sec-in" placeholder="ثواني" min="0" max="59">
+                        <button class="start-timer-btn">▶️ بدء المؤقت</button>
+                        <button class="export-btn">📃 TXT</button>
+                        <button class="export-pdf-btn">📄 PDF</button> 
+                        <button class="export-html-btn">🌐 HTML</button>
+                        <button class="export-md-btn">📝 Markdown</button>
+                    </div>
+                    <div class="color-palette-label">لون البطاقة:</div>
+                    <div class="color-palette"></div>
+                    <div class="tags-container">
+                        <div class="tags-list"></div>
+                        <input type="text" class="tag-input" placeholder="أضف وسماً واضغط Enter">
+                    </div>
+                    <button class="delete-card-btn">🗑️ حذف البطاقة</button>
                 </div>
-                <div class="color-palette-label">لون البطاقة:</div>
-                <div class="color-palette"></div>
-                <div class="tags-container">
-                    <div class="tags-list"></div>
-                    <input type="text" class="tag-input" placeholder="أضف وسماً واضغط Enter">
-                </div>
-                <button class="delete-card-btn">🗑️ حذف البطاقة</button>
             </div>
+            <button class="quick-share-btn" title="مشاركة سريعة" style="padding: 0 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer;">
+                📤
+            </button>
         </div>
     `;
 
@@ -75,19 +80,43 @@ export function addCard(data = {}) {
     const tagInput = card.querySelector('.tag-input');
 
     // فتح وإغلاق القائمة
-card.querySelector('.dropdown-btn').onclick = (e) => {
-    e.stopPropagation();
-    const isHidden = menu.style.display === "none";
-    document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
+    card.querySelector('.dropdown-btn').onclick = (e) => {
+        e.stopPropagation();
+        const isHidden = menu.style.display === "none";
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
 
-    if (isHidden) {
-        menu.style.display = "flex";
-        card.style.height = "auto";
-    } else {
-        menu.style.display = "none";
-        saveAllCards(); 
-    }
-};
+        if (isHidden) {
+            menu.style.display = "flex";
+            card.style.height = "auto";
+        } else {
+            menu.style.display = "none";
+            saveAllCards(); 
+        }
+    };
+
+    // وظيفة المشاركة السريعة
+    card.querySelector('.quick-share-btn').onclick = async (e) => {
+        e.stopPropagation();
+        const noteTitle = card.querySelector('.title').textContent;
+        const noteContent = card.querySelector('.display').textContent;
+        
+        const shareData = {
+            title: noteTitle,
+            text: `📍 ${noteTitle}\n\n${noteContent}\n\nتم الإرسال عبر منظم أفكاري 🚀\n`,
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+                alert("تم نسخ الملاحظة.. متصفحك لا يدعم المشاركة المباشرة.");
+            }
+        } catch (err) {
+            console.error("خطأ في المشاركة:", err);
+        }
+    };
 
     // وضع التعديل
     card.querySelector('.edit-toggle').onclick = (e) => {
@@ -175,8 +204,10 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
     if (targetTime > Date.now()) {
         startCardTimer(card, targetTime, card.querySelector('.timer-box'));
     }
+
     const resizeObserver = new MutationObserver(() => saveAllCards());
     resizeObserver.observe(card, { attributes: true, attributeFilter: ['style'] });
+    
     board.prepend(card);
 }
 
@@ -219,7 +250,3 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
-
-
-
-
