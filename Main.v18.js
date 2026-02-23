@@ -13,25 +13,41 @@ export async function initApp() {
         <div class="brand">
             <h1>منظم أفكاري</h1>
         </div>
-        <div class="toolbar">
-            <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الوسم...">
-            <select id="searchType">
-                <option value="name">العنوان</option>
-                <option value="tag">الوسم</option>
-            </select>
-            <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
-            <button id="importBtn">📥 استيراد</button>
-            <button id="exportTxtBtn">📃 TXT</button>
-            <button id="exportPdfBtn">📄 PDF</button>
-            <button id="dealsBtn" style="border: 1px solid #000; background: #fff; font-weight: bold;">
-           🛒 أدوات الإنتاجية
-            </button>
+        <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="main-tools" style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الوسم...">
+                <select id="searchType">
+                    <option value="name">العنوان</option>
+                    <option value="tag">الوسم</option>
+                </select>
+                <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
+                <button id="importBtn">📥 استيراد</button>
+                <button id="exportTxtBtn">📃 TXT</button>
+                <button id="exportPdfBtn">📄 PDF</button>
+            </div>
+            
+            <div class="promo-tools">
+                <button id="dealsBtn" style="
+                    background: #000; 
+                    color: #fff; 
+                    border: none; 
+                    padding: 8px 15px; 
+                    border-radius: 5px; 
+                    cursor: pointer; 
+                    font-weight: bold;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    transition: transform 0.2s;
+                ">
+                    🛒 أدوات الإنتاجية ↗
+                </button>
+            </div>
             <input type="file" id="fileInput" style="display:none" accept=".json">
         </div>
     </header>
 
-    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;">
-        </div>
+    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;"></div>
 
     <main id="board"></main>
 
@@ -40,9 +56,8 @@ export async function initApp() {
 
     initGlobalListeners();
     initAutoSave();
-    injectNewAd();
+    injectAdScript();
 
-    // تحميل البيانات بانتظار حقيقي لـ IndexedDB
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
@@ -55,22 +70,22 @@ export async function initApp() {
 
 // ====== LISTENERS ======
 function initGlobalListeners() {
-    // إضافة بطاقة
-    const addBtn = document.getElementById("addCardBtn");
-    if (addBtn) addBtn.onclick = () => UI.addCard({});
+    document.getElementById("addCardBtn").onclick = () => UI.addCard({});
 
-    // البحث
+    // زر العروض (جهة المعاكسة)
+    const dealsBtn = document.getElementById("dealsBtn");
+    if (dealsBtn) {
+        dealsBtn.onclick = () => window.open('deals.html', '_blank');
+        dealsBtn.onmouseover = () => dealsBtn.style.transform = "scale(1.05)";
+        dealsBtn.onmouseout = () => dealsBtn.style.transform = "scale(1)";
+    }
+
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
-        sIn.oninput = (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            const type = sTy.value;
-            if (UI.filterCards) UI.filterCards(term, type);
-        };
+        sIn.oninput = (e) => UI.filterCards(e.target.value.toLowerCase().trim(), sTy.value);
     }
 
-    // الاستيراد (Import)
     const importBtn = document.getElementById("importBtn");
     const fileInput = document.getElementById("fileInput");
     if (importBtn && fileInput) {
@@ -88,15 +103,12 @@ function initGlobalListeners() {
                     await store.clear();
                     data.forEach(item => store.add(item));
                     location.reload();
-                } catch (err) {
-                    alert("الملف غير صالح!");
-                }
+                } catch (err) { alert("الملف غير صالح! يجب أن يكون ملف Backup بصيغة JSON."); }
             };
             reader.readAsText(file);
         };
     }
 
-    // القائمة الجانبية (Context Menu)
     const menu = document.getElementById("contextMenu");
     if (menu) {
         document.addEventListener("click", () => menu.style.display = "none");
@@ -109,12 +121,8 @@ function initGlobalListeners() {
         };
     }
 
-    // التصدير
-    const exTxt = document.getElementById("exportTxtBtn");
-    if (exTxt) exTxt.onclick = () => Exporter.exportToTxt();
-
-    const exPdf = document.getElementById("exportPdfBtn");
-    if (exPdf) exPdf.onclick = () => Exporter.exportToPDF();
+    document.getElementById("exportTxtBtn").onclick = () => Exporter.exportToTxt();
+    document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
 }
 
 // ====== AUTO SAVE ======
@@ -132,12 +140,4 @@ function injectAdScript() {
     adScript.async = true;
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
-}
-
-// داخل دالة initGlobalListeners في ملف main.js
-const dealsBtn = document.getElementById("dealsBtn");
-if (dealsBtn) {
-    dealsBtn.onclick = () => {
-        window.open('deals.html', '_blank');
-    };
 }
