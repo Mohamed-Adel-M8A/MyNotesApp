@@ -79,6 +79,17 @@ header {
 
 #toggleDirBtn { background: #475569; }
 
+.deals-btn-style {
+    background: #000000 !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: auto;
+}
+
 /* ====== 3. BOARD & LAYOUT ====== */
 #board {
   display: flex;
@@ -103,8 +114,9 @@ header {
   transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   resize: both; 
   overflow: hidden; 
+  height: fit-content;
   flex: 0 0 auto;
-  margin: 5px;
+  margin: 10px;
   min-height: 300px;
   min-width: 320px;
   max-width: 100%;
@@ -216,9 +228,10 @@ header {
   padding: 20px;
   margin-top: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: static; 
+  position: relative; 
   width: 100%;
   z-index: 50;
+  visibility: visible;
 }
 
 .dropdown-grid {
@@ -397,5 +410,6 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
