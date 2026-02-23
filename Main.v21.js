@@ -16,32 +16,26 @@ export async function initApp() {
         <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
             
             <div class="main-tools" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الوسم...">
+                <input type="text" id="searchInput" placeholder="ابحث...">
                 <select id="searchType">
                     <option value="name">العنوان</option>
                     <option value="tag">الوسم</option>
                 </select>
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
+                
+                <div class="zoom-controls" style="display: flex; align-items: center; gap: 5px; background: #eee; padding: 5px; border-radius: 5px;">
+                    <span>🔍</span>
+                    <button id="zoomOut">➖</button>
+                    <button id="zoomIn">➕</button>
+                </div>
+
                 <button id="exportTxtBtn">📃 TXT</button>
                 <button id="exportPdfBtn">📄 PDF</button>
             </div>
 
             <div class="promo-tools">
-                <button id="dealsBtn" style="
-                    background: #000; 
-                    color: #fff; 
-                    border: none; 
-                    padding: 8px 18px; 
-                    border-radius: 6px; 
-                    cursor: pointer; 
-                    font-weight: bold;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                ">
+                <button id="dealsBtn" style="background: #000; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold;">
                     🛒 أدوات الإنتاجية ↗
                 </button>
             </div>
@@ -50,11 +44,11 @@ export async function initApp() {
         </div>
     </header>
 
-    <div id="ad-container" style="text-align:center; margin:10px auto; min-height:70px;">
+    <main id="board"></main>
+
+    <div id="footer-ads" style="text-align:center; margin: 30px auto; padding: 20px; border-top: 1px dashed #ccc;">
         <div id="container-8f54a65907f2fd9954b6e8ae38ebaa69"></div>
     </div>
-
-    <main id="board"></main>
 
     <div id="contextMenu" class="context-menu" style="display:none; position: absolute; z-index: 1000;"></div>
     `;
@@ -63,7 +57,7 @@ export async function initApp() {
     initAutoSave();
     injectAdScript();
 
-    // تحميل البيانات من IndexedDB
+    // تحميل البيانات
     try {
         const savedCards = await Storage.loadCardsData();
         if (savedCards && Array.isArray(savedCards)) {
@@ -76,30 +70,40 @@ export async function initApp() {
 
 // ====== LISTENERS ======
 function initGlobalListeners() {
-    // إضافة بطاقة جديدة
-    const addBtn = document.getElementById("addCardBtn");
-    if (addBtn) addBtn.onclick = () => UI.addCard({});
+    const board = document.getElementById("board");
 
-    // زر العروض (المكان المعاكس)
+    // إضافة بطاقة
+    document.getElementById("addCardBtn").onclick = () => UI.addCard({});
+
+    // ميزة الزووم (التكبير والتصغير للبطاقات)
+    let currentZoom = 1;
+    document.getElementById("zoomIn").onclick = () => {
+        if (currentZoom < 1.5) {
+            currentZoom += 0.1;
+            board.style.transform = `scale(${currentZoom})`;
+            board.style.transformOrigin = "top center";
+        }
+    };
+    document.getElementById("zoomOut").onclick = () => {
+        if (currentZoom > 0.5) {
+            currentZoom -= 0.1;
+            board.style.transform = `scale(${currentZoom})`;
+            board.style.transformOrigin = "top center";
+        }
+    };
+
+    // زر العروض
     const dealsBtn = document.getElementById("dealsBtn");
-    if (dealsBtn) {
-        dealsBtn.onclick = () => window.open('deals.html', '_blank');
-        dealsBtn.onmouseover = () => dealsBtn.style.transform = "translateY(-2px)";
-        dealsBtn.onmouseout = () => dealsBtn.style.transform = "translateY(0)";
-    }
+    if (dealsBtn) dealsBtn.onclick = () => window.open('deals.html', '_blank');
 
-    // البحث والفلترة
+    // البحث
     const sIn = document.getElementById("searchInput");
     const sTy = document.getElementById("searchType");
     if (sIn && sTy) {
-        sIn.oninput = (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            const type = sTy.value;
-            if (UI.filterCards) UI.filterCards(term, type);
-        };
+        sIn.oninput = (e) => UI.filterCards(e.target.value.toLowerCase().trim(), sTy.value);
     }
 
-    // نظام الاستيراد الذكي (JSON, TXT, HTML)
+    // الاستيراد المطور
     const importBtn = document.getElementById("importBtn");
     const fileInput = document.getElementById("fileInput");
     if (importBtn && fileInput) {
@@ -107,73 +111,73 @@ function initGlobalListeners() {
         fileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
-            const extension = file.name.split('.').pop().toLowerCase();
+            const ext = file.name.split('.').pop().toLowerCase();
 
             reader.onload = async (event) => {
                 const content = event.target.result;
                 try {
-                    if (extension === 'json') {
+                    if (ext === 'json') {
                         const data = JSON.parse(content);
                         const db = await Storage.openDB();
                         const tx = db.transaction("notes", "readwrite");
-                        const store = tx.objectStore("notes");
-                        await store.clear();
-                        data.forEach(item => store.add(item));
+                        await tx.objectStore("notes").clear();
+                        data.forEach(item => tx.objectStore("notes").add(item));
                         location.reload();
-                    } 
-                    else if (extension === 'txt' || extension === 'html') {
-                        const newCardData = {
+                    } else {
+                        const newCard = {
                             id: "card_" + Date.now(),
-                            title: file.name.replace(`.${extension}`, ""),
-                            html: extension === 'html' ? content : content.replace(/\n/g, '<br>'),
-                            tags: "مستورد",
-                            color: "#ffffff",
-                            targetTime: 0,
-                            dir: "rtl"
+                            title: file.name.replace(`.${ext}`, ""),
+                            html: ext === 'html' ? content : content.replace(/\n/g, '<br>'),
+                            tags: "مستورد", color: "#ffffff", targetTime: 0, dir: "rtl"
                         };
-                        UI.addCard(newCardData);
+                        UI.addCard(newCard);
                         await Storage.saveAllCards();
                     }
-                } catch (err) {
-                    alert("خطأ في قراءة الملف!");
-                }
+                } catch (err) { alert("خطأ في الملف!"); }
             };
             reader.readAsText(file);
         };
     }
 
-    // القائمة الجانبية (ContextMenu)
+    // إدارة أحداث البطاقة (Minimize / Maximize) عبر الـ Delegation
+    board.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        if (!card) return;
+
+        if (e.target.classList.contains('btn-minimize')) {
+            card.classList.toggle('minimized');
+            const display = card.querySelector('.display');
+            display.style.display = display.style.display === 'none' ? 'block' : 'none';
+        }
+
+        if (e.target.classList.contains('btn-maximize')) {
+            card.classList.toggle('full-screen');
+        }
+    });
+
+    // Context Menu
     const menu = document.getElementById("contextMenu");
-    if (menu) {
-        document.addEventListener("click", () => menu.style.display = "none");
-        document.body.oncontextmenu = (e) => {
-            const disp = e.target.closest(".display");
-            if (disp && disp.contentEditable === "true") {
-                e.preventDefault();
-                Editor.renderContextMenu(e, menu, disp);
-            }
-        };
-    }
+    document.addEventListener("click", () => menu.style.display = "none");
+    document.body.oncontextmenu = (e) => {
+        const disp = e.target.closest(".display");
+        if (disp && disp.contentEditable === "true") {
+            e.preventDefault();
+            Editor.renderContextMenu(e, menu, disp);
+        }
+    };
 
-    // أزرار التصدير
-    const exTxt = document.getElementById("exportTxtBtn");
-    if (exTxt) exTxt.onclick = () => Exporter.exportToTxt();
-
-    const exPdf = document.getElementById("exportPdfBtn");
-    if (exPdf) exPdf.onclick = () => Exporter.exportToPDF();
+    document.getElementById("exportTxtBtn").onclick = () => Exporter.exportToTxt();
+    document.getElementById("exportPdfBtn").onclick = () => Exporter.exportToPDF();
 }
 
 // ====== AUTO SAVE ======
 function initAutoSave() {
-    const board = document.getElementById("board");
-    if (!board) return;
     const observer = new MutationObserver(() => Storage.saveAllCards());
-    observer.observe(board, { childList: true, subtree: true, characterData: true });
+    observer.observe(document.getElementById("board"), { childList: true, subtree: true, characterData: true });
 }
 
-// ====== ADS INJECTION (OLD SYSTEM) ======
+// ====== ADS INJECTION ======
 function injectAdScript() {
     const adScript = document.createElement('script');
     adScript.type = 'text/javascript';
