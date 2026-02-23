@@ -19,7 +19,7 @@ export async function initApp() {
                 <select id="searchType">
                     <option value="name">بالعنوان</option>
                     <option value="tag">بالوسم</option>
-                    <option value="tag">بالمحتوي</option>
+                    <option value="content">بالمحتوي</option>
                 </select>
                 <button id="addCardBtn" class="btn-primary">➕ إضافة بطاقة</button>
                 <button id="importBtn">📥 استيراد</button>
@@ -186,4 +186,5 @@ document.addEventListener('selectionchange', () => {
         }
     }, 200);
 });
+
 
