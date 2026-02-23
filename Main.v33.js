@@ -1,6 +1,6 @@
 import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v5.js';
 import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v2.js';
-import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.js';
+import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.v3.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
 /* ====== 1. APP INITIALIZATION ====== */
@@ -163,24 +163,26 @@ function injectAdScript() {
 
 
 /* ====== 4. Tool ====== */
+let selectionTimeout;
 document.addEventListener('selectionchange', () => {
-    const selection = window.getSelection();
-    const text = selection.toString().trim();
-    const menu = document.getElementById("context-menu");
+    clearTimeout(selectionTimeout);
+    selectionTimeout = setTimeout(() => {
+        const selection = window.getSelection();
+        const text = selection.toString().trim();
+        const menu = document.getElementById("context-menu");
 
-    if (text.length > 0 && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+        if (text.length > 0 && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
 
-        const fakeEvent = {
-            pageX: rect.left + window.scrollX,
-            pageY: rect.top + window.scrollY - 10
-        };
+            const fakeEvent = {
+                pageX: rect.left + window.scrollX,
+                pageY: rect.top + window.scrollY - 10
+            };
 
-        renderContextMenu(fakeEvent, menu);
-    } else {
-        if (menu) menu.style.display = "none";
-    }
+            if (typeof renderContextMenu === 'function') {
+                renderContextMenu(fakeEvent, menu);
+            }
+        }
+    }, 200);
 });
-
-
