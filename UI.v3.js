@@ -20,7 +20,6 @@ export function addCard(data = {}) {
     const targetTime = parseInt(data.targetTime || 0);
     const dir = data.dir || 'rtl';
     const width = data.width || '350px';
-    const height = data.height || '280px';
 
     const card = document.createElement("div");
     card.className = "card";
@@ -31,7 +30,6 @@ export function addCard(data = {}) {
     // تطبيق الأبعاد والستايل
     card.style.backgroundColor = color;
     card.style.width = width;
-    card.style.height = height;
     card.dir = dir;
 
     card.innerHTML = `
@@ -74,11 +72,17 @@ export function addCard(data = {}) {
     const tagInput = card.querySelector('.tag-input');
 
     // فتح وإغلاق القائمة
-    card.querySelector('.dropdown-btn').onclick = (e) => {
+card.querySelector('.dropdown-btn').onclick = (e) => {
         e.stopPropagation();
         const isHidden = menu.style.display === "none";
         document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
-        menu.style.display = isHidden ? "flex" : "none";
+        
+        if (isHidden) {
+            menu.style.display = "flex";
+            card.style.height = "auto"; 
+        } else {
+            menu.style.display = "none";
+        }
     };
 
     // وضع التعديل
@@ -201,4 +205,5 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
 
