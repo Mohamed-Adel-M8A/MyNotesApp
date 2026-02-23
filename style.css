@@ -88,7 +88,7 @@ header {
   align-items: start;
 }
 
-/* ====== 4. CARD COMPONENT ====== */
+/* ====== 4. CARD COMPONENT (RESIZE ENABLED) ====== */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -99,10 +99,11 @@ header {
   gap: 15px;
   position: relative;
   box-shadow: var(--shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  resize: vertical;
-  overflow: visible;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  resize: both; /* تم التعديل للسحب من الجهتين */
+  overflow: auto; /* تم التعديل ليعمل السحب */
   min-height: 280px;
+  min-width: 300px;
 }
 
 .card:hover {
@@ -384,5 +385,5 @@ header {
 @media (max-width: 600px) {
   header { padding: 15px 20px; }
   #board { grid-template-columns: 1fr; padding: 15px; }
-  .card { width: 100%; min-width: auto; }
+  .card { width: 100%; min-width: auto; resize: vertical; }
 }
