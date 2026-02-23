@@ -1,5 +1,3 @@
-/* ====== Ui.js - النسخة المصلحة بالكامل ====== */
-
 import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v1.js';
 import { startCardTimer } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/timer.js';
 import { 
@@ -9,14 +7,9 @@ import {
     exportSingleCardAsMD 
 } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
 
-/* ====== 1. MAIN CARD INTERFACE ====== */
 export function addCard(data = {}) {
     const board = document.getElementById("board");
-    
-    if (!board) {
-        console.error("خطأ: لم يتم العثور على عنصر 'board'. تأكد من تشغيل initApp أولاً.");
-        return;
-    }
+    if (!board) return;
 
     const id = data.id || crypto.randomUUID();
     const title = data.title || 'عنوان جديد';
@@ -25,25 +18,32 @@ export function addCard(data = {}) {
     const tags = data.tags || '';
     const targetTime = parseInt(data.targetTime || 0);
     const dir = data.dir || 'rtl';
+    const width = data.width || '320px';
+    const height = data.height || '250px';
 
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.id = id;
     card.dataset.tags = tags.toLowerCase();
     card.dataset.targettime = targetTime;
+    
     card.style.backgroundColor = color;
+    card.style.width = width;
+    card.style.height = height;
+    card.style.resize = "both";
+    card.style.overflow = "auto";
+    card.style.display = "flex";
+    card.style.flexDirection = "column";
     card.dir = dir;
 
     card.innerHTML = `
         <div class="edit-tools">
-            <button class="edit-toggle" title="تعديل">✏️</button>
-            <button class="dir-toggle" title="تغيير الاتجاه">↔️</button>
-            <span class="btn-minimize">➖</span>
-            <span class="btn-maximize">🔳</span>
+            <button class="edit-toggle">✏️</button>
+            <button class="dir-toggle">↔️</button>
         </div>
         <div class="title" contenteditable="true">${title}</div>
         <div class="timer-box"></div>
-        <div class="display" contenteditable="false">${html}</div>
+        <div class="display" contenteditable="false" style="flex-grow: 1; min-height: 50px;">${html}</div>
         <div class="dropdown-controls">
             <button class="dropdown-btn">⚙️ الأدوات والإعدادات</button>
             <div class="dropdown-menu" style="display:none;">
@@ -53,8 +53,8 @@ export function addCard(data = {}) {
                     <input type="number" class="min-in" placeholder="دقائق" min="0" max="59">
                     <input type="number" class="sec-in" placeholder="ثواني" min="0" max="59">
                     <button class="start-timer-btn">▶️ بدء المؤقت</button>
-                    <button class="export-btn">📃 تصدير TXT</button>
-                    <button class="export-pdf-btn">📄 تصدير PDF</button> 
+                    <button class="export-btn">📃 TXT</button>
+                    <button class="export-pdf-btn">📄 PDF</button> 
                     <button class="export-html-btn">🌐 HTML</button>
                     <button class="export-md-btn">📝 Markdown</button>
                 </div>
@@ -69,30 +69,18 @@ export function addCard(data = {}) {
         </div>
     `;
 
-    const menu = card.querySelector('.dropdown-menu');
     const display = card.querySelector('.display');
+    const menu = card.querySelector('.dropdown-menu');
     const tagsList = card.querySelector('.tags-list');
     const tagInput = card.querySelector('.tag-input');
 
-    /* ====== 2. DROPDOWN LOGIC ====== */
     card.querySelector('.dropdown-btn').onclick = (e) => {
         e.stopPropagation();
         const isHidden = menu.style.display === "none";
-        
-        document.querySelectorAll('.dropdown-menu').forEach(m => {
-            if (m !== menu) m.style.display = "none";
-        });
-        
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = "none");
         menu.style.display = isHidden ? "flex" : "none";
-        
-        if (isHidden) {
-            setTimeout(() => {
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
-        }
     };
 
-    /* ====== 3. EDITOR & DIRECTION ====== */
     card.querySelector('.edit-toggle').onclick = (e) => {
         const isEditable = display.contentEditable === "true";
         display.contentEditable = !isEditable;
@@ -106,7 +94,6 @@ export function addCard(data = {}) {
         saveAllCards();
     };
 
-    /* ====== 4. COLORS & TAGS ====== */
     const palette = card.querySelector('.color-palette');
     const bgColors = ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'];
     bgColors.forEach(clr => {
@@ -133,15 +120,12 @@ export function addCard(data = {}) {
         }
     };
 
-    /* ====== 5. ACTIONS & TIMERS ====== */
     card.querySelector('.start-timer-btn').onclick = () => {
         const d = parseInt(card.querySelector('.day-in').value) || 0;
         const h = parseInt(card.querySelector('.hour-in').value) || 0;
         const m = parseInt(card.querySelector('.min-in').value) || 0;
         const s = parseInt(card.querySelector('.sec-in').value) || 0;
-        
         const totalMs = ( (d * 86400) + (h * 3600) + (m * 60) + s ) * 1000;
-        
         if (totalMs > 0) {
             const target = Date.now() + totalMs;
             card.dataset.targettime = target;
@@ -150,13 +134,17 @@ export function addCard(data = {}) {
         }
     };
 
+    card.onmouseup = () => {
+        saveAllCards();
+    };
+
     card.querySelector('.export-btn').onclick = () => exportSingleCardAsTxt(card);
     card.querySelector('.export-pdf-btn').onclick = () => exportSingleCardAsPDF(card);
     card.querySelector('.export-html-btn').onclick = () => exportSingleCardAsHTML(card);
     card.querySelector('.export-md-btn').onclick = () => exportSingleCardAsMD(card);
-    
+
     card.querySelector('.delete-card-btn').onclick = () => {
-        if (confirm("هل أنت متأكد من حذف هذه البطاقة نهائياً؟")) {
+        if (confirm("حذف نهائي؟")) {
             card.remove();
             saveAllCards();
         }
@@ -166,11 +154,9 @@ export function addCard(data = {}) {
         startCardTimer(card, targetTime, card.querySelector('.timer-box'));
     }
 
-    // إضافة البطاقة في بداية البورد
     board.prepend(card);
 }
 
-/* ====== 6. FILTER LOGIC (NEW) ====== */
 export function filterCards(query, type) {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
@@ -181,18 +167,15 @@ export function filterCards(query, type) {
     });
 }
 
-/* ====== 7. UTILS ====== */
 function createTag(text, container, card) {
     const tag = document.createElement("span");
     tag.className = "tag";
     tag.innerHTML = `${text} <button type="button">×</button>`;
-    
     tag.querySelector('button').onclick = (e) => {
         e.stopPropagation();
         tag.remove();
         updateTagsDataset(card);
     };
-    
     container.appendChild(tag);
     updateTagsDataset(card);
 }
@@ -204,5 +187,3 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
-
-
