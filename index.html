@@ -6,15 +6,34 @@
     <title>منظم أفكاري | النسخة الاحترافية</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v5.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-270WV92FGF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-270WV92FGF', {
+    'anonymize_ip': true,
+    'cookie_flags': 'SameSite=None;Secure'
+  });
+
+  window.trackAppEvent = function(eventName, category) {
+    gtag('event', eventName, {
+      'event_category': category,
+      'send_to': 'G-270WV92FGF'
+    });
+  };
+</script>
+
+    
 </head>
 <body>
-
     <div id="app-root"></div>
-
     <script type="module">
         import { initApp } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v35.js';
         initApp();
     </script>
-
 </body>
 </html>
