@@ -203,6 +203,7 @@ header {
   margin-top: 10px;
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
 }
@@ -257,6 +258,7 @@ header {
   width: 100%;
   z-index: 50;
   visibility: visible;
+  flex-basis: 100%;
 }
 
 .dropdown-grid {
@@ -454,6 +456,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
