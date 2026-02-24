@@ -43,8 +43,8 @@ export function addCard(data = {}) {
         <div class="display" contenteditable="false">${html}</div>
         
         <div class="dropdown-controls">
-            <button class="share-card-btn" title="مشاركة الملاحظة">مشاركة</button>
             <button class="dropdown-btn">⚙️ الأدوات والإعدادات</button>
+            <button class="share-card-btn" title="مشاركة الملاحظة">مشاركة</button>
             <div class="dropdown-menu" style="display:none;">
                 <div class="dropdown-grid">
                     <input type="number" class="day-in" placeholder="أيام" min="0">
@@ -237,4 +237,5 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
 
