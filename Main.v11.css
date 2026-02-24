@@ -319,6 +319,7 @@ header {
   gap: 10px;
   justify-content: center;
   padding: 5px 0;
+  flex-wrap: wrap;
 }
 
 .color-swatch {
@@ -456,6 +457,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
