@@ -133,7 +133,11 @@ shareBtn.onclick = async (e) => {
     };
 
     const palette = card.querySelector('.color-palette');
-    const bgColors = ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'];
+    const bgColors = [
+        '#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec', 
+        '#e8f5e9', '#e3f2fd', '#f3e5f5', '#fff3e0', '#efebe9',
+        '#d1f2eb', '#fdebd0', '#fad7a0', '#aed6f1', '#a2d9ce'
+    ];
     bgColors.forEach(clr => {
         const swatch = document.createElement("button");
         swatch.className = "color-swatch";
@@ -237,5 +241,3 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
-
-
