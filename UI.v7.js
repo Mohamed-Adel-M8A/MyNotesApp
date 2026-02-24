@@ -1,4 +1,4 @@
-import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v2.js';
+import { saveAllCards } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v3.js';
 import { startCardTimer } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/timer.js';
 import { 
     exportSingleCardAsTxt, 
@@ -237,3 +237,4 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
+
