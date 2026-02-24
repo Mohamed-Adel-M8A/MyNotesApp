@@ -1,4 +1,4 @@
-import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v11.js';
+import * as UI from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/UI.v12.js';
 import * as Storage from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/storage.v3.js';
 import * as Editor from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Editor.v3.js';
 import * as Exporter from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/exporter.js';
@@ -122,7 +122,6 @@ function initGlobalListeners() {
         };
     }
 
-    // القائمة الجانبية (Context Menu) للمحرر
     const menu = document.getElementById("contextMenu");
     document.addEventListener("click", () => menu.style.display = "none");
     document.body.oncontextmenu = (e) => {
@@ -185,6 +184,7 @@ function injectAdScript() {
     adScript.src = 'https://pl28764749.effectivegatecpm.com/8f54a65907f2fd9954b6e8ae38ebaa69/invoke.js';
     document.head.appendChild(adScript);
 }
+
 
 
 
