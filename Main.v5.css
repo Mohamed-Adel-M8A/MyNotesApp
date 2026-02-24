@@ -202,10 +202,30 @@ header {
 .dropdown-controls {
   margin-top: 10px;
   position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.share-card-btn {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.share-card-btn:hover {
+  background: #e2e8f0;
+  border-color: var(--primary);
 }
 
 .dropdown-btn {
-  width: 100%;
+  flex: 1;
   padding: 12px;
   background: #f8fafc;
   border: 1px solid var(--border);
@@ -228,7 +248,9 @@ header {
   padding: 20px;
   margin-top: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: relative; 
+  position: absolute;
+  top: 100%;
+  left: 0;
   width: 100%;
   z-index: 50;
   visibility: visible;
@@ -410,6 +432,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
