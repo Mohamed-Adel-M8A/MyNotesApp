@@ -209,7 +209,7 @@ header {
 
 .share-card-btn {
   width: 50px;
-  height: 45px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -237,7 +237,6 @@ header {
   font-weight: 700;
   color: var(--dark);
   transition: background 0.2s;
-  white-space: nowrap;
 }
 
 .dropdown-btn:hover { background: #f1f5f9; }
@@ -252,9 +251,7 @@ header {
   padding: 20px;
   margin-top: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: absolute;
-  top: 100%;
-  left: 0;
+  position: relative; 
   width: 100%;
   z-index: 50;
   visibility: visible;
@@ -436,6 +433,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
