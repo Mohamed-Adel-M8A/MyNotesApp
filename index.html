@@ -29,10 +29,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v5.css">
 </head>
 <body>
+    
     <div id="app-root"></div>
     <script type="module">
         import { initApp } from 'https://cdn.jsdelivr.net/gh/Mohamed-Adel-M8A/MyNotesApp/Main.v35.js';
         initApp();
     </script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker Registered successfully!'))
+        .catch(err => console.error('Service Worker Registration failed:', err));
+    });
+  }
+</script>
+    
 </body>
 </html>
