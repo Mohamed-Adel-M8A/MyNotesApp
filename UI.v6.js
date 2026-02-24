@@ -12,7 +12,6 @@ export function addCard(data = {}) {
     const board = document.getElementById("board");
     if (!board) return;
 
-    // إعداد البيانات الافتراضية
     const id = data.id || crypto.randomUUID();
     const title = data.title || 'عنوان جديد';
     const html = data.html || '';
@@ -29,7 +28,6 @@ export function addCard(data = {}) {
     card.dataset.tags = tags.toLowerCase();
     card.dataset.targettime = targetTime;
     
-    // تطبيق الأبعاد والستايل
     card.style.backgroundColor = color;
     card.style.width = width;
     card.style.height = height;
@@ -45,6 +43,7 @@ export function addCard(data = {}) {
         <div class="display" contenteditable="false">${html}</div>
         
         <div class="dropdown-controls">
+            <button class="share-card-btn" title="مشاركة الملاحظة">مشاركة</button>
             <button class="dropdown-btn">⚙️ الأدوات والإعدادات</button>
             <div class="dropdown-menu" style="display:none;">
                 <div class="dropdown-grid">
@@ -74,7 +73,6 @@ export function addCard(data = {}) {
     const tagsList = card.querySelector('.tags-list');
     const tagInput = card.querySelector('.tag-input');
 
-    // فتح وإغلاق القائمة
 card.querySelector('.dropdown-btn').onclick = (e) => {
     e.stopPropagation();
     const isHidden = menu.style.display === "none";
@@ -89,7 +87,33 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
     }
 };
 
-    // وضع التعديل
+const shareBtn = card.querySelector('.share-card-btn');
+shareBtn.onclick = async (e) => {
+    e.stopPropagation();
+    
+    const cardTitle = card.querySelector('.title').innerText;
+    const cardContent = card.querySelector('.display').innerText;
+    const shareText = `📌 ${cardTitle}\n\n${cardContent}\n\nتمت المشاركة من تطبيق MyNotes`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: cardTitle,
+                text: shareText
+            });
+        } catch (err) {
+            console.log("تم إلغاء المشاركة");
+        }
+    } else {
+        try {
+            await navigator.clipboard.writeText(shareText);
+            alert("تم نسخ نص الملاحظة للحافظة بنجاح!");
+        } catch (err) {
+            alert("عذراً، المتصفح لا يدعم المشاركة أو النسخ.");
+        }
+    }
+};
+
     card.querySelector('.edit-toggle').onclick = (e) => {
         const isEditable = display.contentEditable === "true";
         display.contentEditable = !isEditable;
@@ -103,13 +127,11 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
         }
     };
 
-    // تغيير الاتجاه
     card.querySelector('.dir-toggle').onclick = () => {
         card.dir = card.dir === "rtl" ? "ltr" : "rtl";
         saveAllCards();
     };
 
-    // لوحة الألوان
     const palette = card.querySelector('.color-palette');
     const bgColors = ['#ffffff', '#fff9c4', '#ffecb3', '#e1f5fe', '#f1f8e9', '#fce4ec'];
     bgColors.forEach(clr => {
@@ -123,7 +145,6 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
         palette.appendChild(swatch);
     });
 
-    // الوسوم
     if (tags) {
         tags.split(',').forEach(t => {
             if (t.trim()) createTag(t.trim(), tagsList, card);
@@ -137,7 +158,6 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
         }
     };
 
-    // المؤقت
     card.querySelector('.start-timer-btn').onclick = () => {
         const d = parseInt(card.querySelector('.day-in').value) || 0;
         const h = parseInt(card.querySelector('.hour-in').value) || 0;
@@ -154,12 +174,10 @@ card.querySelector('.dropdown-btn').onclick = (e) => {
         }
     };
 
-    // حفظ الحجم عند انتهاء السحب
     card.onmouseup = () => {
         saveAllCards(); 
     };
 
-    // التصدير والحذف
     card.querySelector('.export-btn').onclick = () => exportSingleCardAsTxt(card);
     card.querySelector('.export-pdf-btn').onclick = () => exportSingleCardAsPDF(card);
     card.querySelector('.export-html-btn').onclick = () => exportSingleCardAsHTML(card);
@@ -219,7 +237,3 @@ function updateTagsDataset(card) {
     card.dataset.tags = allTags.join(',').toLowerCase();
     saveAllCards();
 }
-
-
-
-
