@@ -1,8 +1,14 @@
 {
   "short_name": "MyNotes",
-  "name": "MyNotes - منظم أفكاري الاحترافي",
+  "name": "MyNotes - منظم أفكاري",
   "description": "تطبيق ملاحظات ذكي مع مؤقت زمني وأدوات تنسيق متطورة",
   "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
     {
       "src": "icon-512.png",
       "type": "image/png",
