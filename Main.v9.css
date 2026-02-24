@@ -239,7 +239,9 @@ header {
   transition: background 0.2s;
 }
 
-.dropdown-btn:hover { background: #f1f5f9; }
+.dropdown-btn:hover {
+  background: #f1f5f9;
+}
 
 .dropdown-menu {
   display: none;
@@ -251,7 +253,7 @@ header {
   padding: 20px;
   margin-top: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: relative; 
+  position: relative;
   width: 100%;
   z-index: 50;
   visibility: visible;
@@ -278,7 +280,10 @@ header {
   transition: all 0.2s;
 }
 
-.dropdown-grid button:hover { border-color: var(--primary); background: #f8fafc; }
+.dropdown-grid button:hover {
+  border-color: var(--primary);
+  background: #f8fafc;
+}
 
 .start-timer-btn {
   grid-column: span 2;
@@ -287,10 +292,25 @@ header {
   border: none !important;
 }
 
-.export-btn { color: var(--success); border-color: #bbf7d0 !important; }
-.export-pdf-btn { color: var(--danger); border-color: #fecdd3 !important; }
-.export-html-btn { color: #2563eb; border-color: #dbeafe !important; }
-.export-md-btn { color: #475569; border-color: #e2e8f0 !important; }
+.export-btn {
+  color: var(--success);
+  border-color: #bbf7d0 !important;
+}
+
+.export-pdf-btn {
+  color: var(--danger);
+  border-color: #fecdd3 !important;
+}
+
+.export-html-btn {
+  color: #2563eb;
+  border-color: #dbeafe !important;
+}
+
+.export-md-btn {
+  color: #475569;
+  border-color: #e2e8f0 !important;
+}
 
 .color-palette {
   display: flex;
@@ -309,8 +329,9 @@ header {
   transition: transform 0.2s;
 }
 
-.color-swatch:hover { transform: scale(1.25); }
-
+.color-swatch:hover {
+  transform: scale(1.25);
+}
 /* ====== 6. TAGS SYSTEM ====== */
 .tags-container {
   border-top: 1px solid #f1f5f9;
@@ -433,6 +454,7 @@ header {
   #board { grid-template-columns: 1fr; padding: 15px; }
   .card { width: 100%; min-width: auto; resize: vertical; }
 }
+
 
 
 
